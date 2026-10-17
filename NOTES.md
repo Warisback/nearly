@@ -110,6 +110,9 @@ time curl -s -X POST "$COSMOS3_REASON_URL/v1/chat/completions" "${H[@]}" -H "Con
   - [DOC] The `gpu/` skills hardcode `GPU_HOST=166.19.38.112`, ports 8001 to 8004. `config.example` says each model's URL is set in `/config`.
   - [FIELD] At SF and NYC, `COSMOS3_REASON_URL` was **missing from /config**. Teams used `166.19.38.112:8001` without `/v1`, or read `cosmos_host`/`cosmos_port` from `/config/<team>-vss2-secret.yaml`.
   - **Do:** use the env var; if it's missing, fall back to the skills' host, read from config in one place. Accept base URLs with or without a trailing `/v1`.
+- **From the laptop [LIVE, 12:14]:** the event GPU host answers from the venue Wi-Fi.
+  - `166.19.38.112:8001/v1/health/ready` and `:8002/healthz` both return 401 in 0.2 s. They're reachable and want the team token.
+  - So `backend/verify.py` and `evals/labelled.py` run on the laptop once `nearly/.env` (gitignored) holds `COSMOS3_REASON_URL`, `GPU_BEARER_TOKEN` and `YOLO_URL`, copied from `/config/<team>.config` on the VM.
 - **From the pod [FIELD]:** at SF, a pod reached the GPU host by IP. Team hostnames didn't resolve inside the cluster, and one team needed `hostAliases`. If the London URL is a hostname, test it from the pod (section 0, step 7).
 
 ## 2. YOLO11: `$YOLO_URL` (yolo11s, Ultralytics on a custom FastAPI server)

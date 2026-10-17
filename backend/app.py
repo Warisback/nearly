@@ -10,6 +10,7 @@ from __future__ import annotations
 import mimetypes
 import os
 import re
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, Literal
 
@@ -19,6 +20,7 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from backend import live as live_path
 from backend.state import DEMO_BRAND, DEMO_SHOPPER, ROOT, State
 
 DIST = Path(os.environ.get("NEARLY_WEB_DIST") or ROOT / "web" / "dist")
@@ -50,7 +52,17 @@ PLACEHOLDER = """<!doctype html><html lang="en"><head><meta charset="utf-8">
 NO_STORE = {"Cache-Control": "no-store"}
 
 state = State()
-app = FastAPI(title="Nearly", docs_url=None, redoc_url=None, openapi_url=None)
+
+
+@asynccontextmanager
+async def lifespan(_app):
+    stop = live_path.start(state)  # the clips/incoming/ watcher (step 3), when Cosmos is configured
+    yield
+    if stop:
+        stop.set()
+
+
+app = FastAPI(title="Nearly", docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "POST"], allow_headers=["*"])
 
 
