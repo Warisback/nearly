@@ -11,6 +11,7 @@ Standard library only, so it runs on the laptop, the VM and the pod alike.
 from __future__ import annotations
 
 import base64
+import http.client
 import json
 import os
 import re
@@ -157,8 +158,9 @@ def verify(clip: str | Path, prepared: bool = False) -> dict:
                 break
             if err.code not in (404, 429, 502, 503):
                 break
-        except (urllib.error.URLError, TimeoutError) as err:
-            error = f"no answer: {getattr(err, 'reason', err)}"
+        except (OSError, ValueError, LookupError, http.client.HTTPException) as err:
+            # Timeouts, dropped connections, half replies, non-JSON or reply shapes without "choices".
+            error = f"no answer: {getattr(err, 'reason', None) or err!r}"
         time.sleep(2)
     seconds = round(time.perf_counter() - started, 2)
     verdict = classify(parse(raw)) if error is None else {

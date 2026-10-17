@@ -80,9 +80,13 @@ class State:
         self.live_status: dict | None = None
         self.live_pings: dict[str, list[dict]] = {}
         self.active_shopper: str | None = None
+        self.active_since = 0.0  # when the active shopper opted in
+        self.run = 0  # bumped by R and G: a Cosmos answer from an earlier run is dropped
         self.frame_changed_at = 0.0
-        self._event_seq = max((int(ev["event_id"].split("_")[1]) for frame in self.frames
-                               for ev in frame["api/live"]["events"]), default=0)
+        # Event ids continue after the seed's and after clips a previous run left in clips/.
+        seed_ids = [int(ev["event_id"].split("_")[1]) for frame in self.frames for ev in frame["api/live"]["events"]]
+        clip_ids = [int(p.stem[3:]) for p in (ROOT / "clips").glob("ev_*.mp4") if p.stem[3:].isdigit()]
+        self._event_seq = max(seed_ids + clip_ids, default=0)
         self._check_seed()
 
     def _check_seed(self) -> None:
@@ -109,14 +113,20 @@ class State:
             return self.position()
 
     def hero(self) -> dict:
+        """The fallback when the live path misbehaves: the scripted hero, clean (opt-ins kept)."""
         with self._lock:
             self.frame = self.hero_frame
+            self.run += 1
+            self.live_events.clear()
+            self.live_pings.clear()
+            self.live_status = None
             self.frame_changed_at = time.time()
             return self.position()
 
     def reset(self) -> dict:
         with self._lock:
             self.frame = 0
+            self.run += 1
             self.optins.clear()
             self.live_events.clear()
             self.live_pings.clear()
@@ -134,6 +144,7 @@ class State:
                 track_id = self._next_track()
             self.optins[shopper_id] = track_id
             self.active_shopper = shopper_id
+            self.active_since = time.time()
             return {"shopper_id": shopper_id, "track_id": track_id}
 
     def _seed_track(self, shopper_id: str) -> int | None:
@@ -156,23 +167,33 @@ class State:
             self._event_seq += 1
             return f"ev_{self._event_seq:04d}"
 
-    def begin_check(self, clip_url: str) -> None:
+    def begin_check(self, clip_url: str) -> int:
+        """Show the clip as being checked. Returns the run it belongs to (see save_event)."""
         with self._lock:
-            last = self.live_status["last_latency_s"] if self.live_status else self.frames[self.frame]["api/live"]["last_latency_s"]
+            # Only a measured latency is shown during a live check, never the scripted one.
+            last = self.live_status["last_latency_s"] if self.live_status else None
             self.live_status = {"stage": "checking", "clip_url": clip_url, "last_latency_s": last, "at": time.time()}
+            return self.run
 
-    def end_check(self) -> None:
+    def end_check(self, run: int | None = None) -> None:
         """Nothing to save (nobody reached in, or Cosmos couldn't be asked): back to waiting."""
         with self._lock:
+            if run is not None and run != self.run:
+                return
             last = self.live_status["last_latency_s"] if self.live_status else None
             self.live_status = {"stage": "waiting", "clip_url": None, "last_latency_s": last, "at": time.time()}
 
-    def save_event(self, event_id: str, verdict: dict, clip_url: str, arrived_at: float) -> dict:
-        """Turn a Cosmos verdict into a ShelfEvent, with the seconds from file arrival to saved."""
+    def save_event(self, event_id: str, verdict: dict, clip_url: str, arrived_at: float,
+                   run: int | None = None) -> dict | None:
+        """Turn a Cosmos verdict into a ShelfEvent, with the seconds from file arrival to saved.
+        Returns None, saving nothing, if R or G was pressed while Cosmos was checking."""
         with self._lock:
+            if run is not None and run != self.run:
+                return None
             zone_id = STICKER_ZONES.get(verdict.get("zone") or "", UNKNOWN)
             product = next((p for p in self.products_by_id.values() if p["zone_id"] == zone_id), None)
-            shopper = self.active_shopper
+            # The latest opt-in claims the clips that arrive after it, not ones already on their way.
+            shopper = self.active_shopper if self.active_shopper and self.active_since <= arrived_at else None
             track_id = self.optins[shopper] if shopper in self.optins else self._next_track()
             latency = round(time.time() - arrived_at, 1)
             event = {
@@ -252,7 +273,9 @@ class State:
         live_events, _ = self._live_snapshot()
         floor = out.get("privacy_floor", PRIVACY_FLOOR)
         for zone in out["zones"]:
-            here = [ev for ev in live_events if ev["zone_id"] == zone["zone_id"] and ev["brand_id"] == brand_id]
+            # A zone below the privacy floor stays hidden: a couple of live clips mustn't unhide it.
+            here = [] if zone.get("hidden") else [
+                ev for ev in live_events if ev["zone_id"] == zone["zone_id"] and ev["brand_id"] == brand_id]
             if here:
                 zone["views"] += len(here)
                 zone["takes"] += sum(ev["action"] == "take" for ev in here)
@@ -326,6 +349,8 @@ class State:
             if live_here and metric in METRIC_WORDS:
                 out["events"] = live_here + out["events"]
                 out["title"] = f"{zone[metric]} {METRIC_WORDS[metric]} this week at {zone_id}"
+                if out["title"] != existing.get("title"):
+                    out["agent_run"] = None  # the summary was written for the old total
             return out
 
         if zone_id is not None:

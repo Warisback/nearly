@@ -327,6 +327,45 @@ Live mode behaves exactly like the UI's mock mode (`web/src/api.js`), so a prese
 - **Own footage is welcome; internet video isn't** (VAST's announcement; README).
 - **Uploads and re-ingest were unreliable [FIELD]:** at SF and NYC, uploads stalled 40+ minutes or never indexed. Keep the direct path (step 3) as the main route, not a backup.
 
+## 13. Steps 2 and 3 on the laptop [OURS, 12:40]
+
+**Step 2:** `backend/verify.py` (one clip → verdict) and `evals/labelled.py` (every clip in `clips/labelled/` against `labels.csv`).
+- `evals/labelled.py` prints a confusion matrix, the can't-tell rate, zone accuracy, seconds per clip and the gate line.
+- It writes `evals/results.csv`.
+- Both read `nearly/.env`.
+
+**Step 3, the direct path:** `backend/live.py`. The server's lifespan starts it when `COSMOS3_REASON_URL` is set.
+1. It watches `clips/incoming/`. A file counts once its size holds still for 0.5 s **and** it can be moved.
+   - It is **claimed first**, by moving it to `incoming/done/<ms>_<name>`. A file still being written or held open stays put and is retried, so one clip is never saved twice.
+2. It re-encodes the **last 8 s** (the put-back ends the clip) to `clips/ev_XXXX.mp4` (H.264, 960 px, faststart). Then it sets `api/live` to "checking".
+3. It calls Cosmos, then saves a ShelfEvent and sets "saved".
+   - `latency_s` = **seconds from the file appearing to the event being saved**. It doesn't include the phone-to-laptop transfer. The Monitor labels it "Clip arrival → saved event"; say the same in the pitch.
+   - `none` saves nothing, and neither does any failed call (no token, timeout, dropped connection, odd reply). Only a real Cosmos reply that is unparseable or below 0.6 becomes "can't tell".
+   - **R** and **G** start a new run, so an answer still in flight is dropped. **G** shows the scripted hero cleanly.
+   - A clip counts for the opted-in shopper only if it arrived after their opt-in.
+   - Live clips never unhide a zone below the privacy floor.
+   - Event ids continue after clips already in `clips/`.
+
+**How live events join the scripted demo:**
+- They go on top of the current frame until **R**.
+- The latest opt-in claims every later live interaction.
+- A put-back lands on that shopper's list, with the brief's template ping when the product has a Clubcard price.
+- Brand totals add the live counts: views +1 per event at the zone; pick-ups and put-backs by action; put-back rate = puts / (takes + puts).
+- Event and zone evidence include live events.
+- Pressing **L** or **G** after a live event puts the scripted stage back on the Monitor.
+
+**Tested with a stand-in Cosmos (no token yet):**
+- An adversarial review confirmed 17 defects. All are fixed, and 20 checks now pass:
+  - each of the six fail paths saves nothing and never sticks on "checking";
+  - a clip held open is handled once, after it's released;
+  - a late answer after **G** is dropped;
+  - opt-in attribution, the privacy floor and id continuity all hold.
+- In a real browser: a dropped clip showed "checking", then "saved" with the toast and a 3.3 s latency. The phone got the card and the £1.10 ping.
+
+**Not done yet:**
+- the VSS upload path (it needs the event network, so the VM);
+- running the watcher inside the pod (it would need the token in the pod's Secret, with clips copied in by `kubectl cp`).
+
 ## 11. For the UI side (we don't touch `web/`)
 
 1. **Fixed (10:25, when I took over the UI):** the UI now calls the backend by default, as ASTRA.md says. `?mock=1` reads the seed, and `?mock=1&frame=3` opens the seed on a given frame, for screenshots and video takes.

@@ -163,6 +163,24 @@ Read nearly/SOURCE.md (Job 1) and nearly/web/ASTRA_ASSETS.md (asset 2). Improve 
     - `zone` is the sticker number 1–6, or blank for `none`.
   - Example row: `clip_07.mp4,put,1`.
 
+### The live moment (a real clip becomes a saved event)
+
+Run the app on the laptop with `nearly/.env` holding the team's `COSMOS3_REASON_URL` and `GPU_BEARER_TOKEN`:
+```bash
+cd nearly && python main.py    # prints "live: watching …\clips\incoming"
+```
+
+1. The judge picks something up and puts it back.
+2. Film 3–6 s with the shelf phone, and drop the clip into `nearly/clips/incoming/`.
+   - The OneDrive phone app can upload straight into that folder, because it's inside OneDrive.
+   - Or copy it over USB.
+3. The Monitor shows "Checking with Cosmos", then the saved event with the real seconds.
+4. If the judge opted in first, the card and the ping land on their phone.
+
+Press **R** before the next judge.
+
+The judges' phones can't reach `127.0.0.1`. For the QR, either deploy (above), or ask the backend side to open a public tunnel from the laptop; then open `#/qr` on that tunnel URL.
+
 ### The demo, in order (keys: **L** next frame, **G** hero, **R** reset)
 
 | Frame | Label in the seed | What the screens show |
