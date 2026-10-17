@@ -1,0 +1,111 @@
+/* Brand screen (#/brand), Walkers' view.
+   Every rule is scoped under .brand-screen: this file loads before styles.css and Tailwind's preflight,
+   so an unscoped rule would lose ties to the globals. */
+.brand-screen { --brand-amber-ink: #8f5f12; }
+.brand-screen .eyebrow { font-size: 12px; letter-spacing: 1.5px; }
+.brand-screen .screen-heading { margin-bottom: 26px; }
+.brand-screen .screen-heading p { font-size: 18px; line-height: 1.55; }
+.brand-screen .pill { gap: 7px; padding: 8px 14px; font-size: 13px; }
+.brand-screen .brand-label { font-size: 13px; font-weight: 650; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); }
+
+/* Category reference, beside the heading */
+.brand-screen .brand-category { display: grid; grid-template-columns: auto auto; align-items: end; column-gap: 22px; row-gap: 6px; padding: 18px 24px; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); }
+.brand-screen .brand-category .brand-label { grid-column: 1 / -1; }
+.brand-screen .brand-category strong { font-size: 52px; line-height: 1; font-weight: 500; letter-spacing: -2px; font-variant-numeric: tabular-nums; }
+.brand-screen .brand-legend { display: inline-flex; align-items: center; gap: 8px; padding-bottom: 6px; font-size: 15px; color: var(--muted); }
+.brand-screen .brand-legend i { width: 14px; height: 14px; border-radius: 4px; background: var(--amber); }
+
+.brand-screen .brand-section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.brand-screen .brand-hint { display: inline-flex; align-items: center; gap: 7px; font-size: 15px; color: var(--muted); }
+
+/* Zone cards */
+.brand-screen .brand-zones { display: grid; gap: 20px; }
+.brand-screen .brand-card { padding: 24px 28px 28px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); box-shadow: var(--shadow); }
+.brand-screen .brand-card-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 20px; }
+.brand-screen .brand-tile { width: 72px; height: 72px; }
+.brand-screen .brand-tile .product-tile { width: 72px; height: 72px; min-height: 72px; border-radius: 18px; }
+.brand-screen .brand-tile .product-brand { font-size: 11px; letter-spacing: 1.2px; }
+.brand-screen .brand-tile-blank { display: block; width: 100%; height: 100%; border-radius: 18px; background: var(--mint-soft); }
+.brand-screen .brand-card-title h2 { font-size: 30px; line-height: 1.15; font-weight: 500; letter-spacing: -1px; }
+.brand-screen .brand-place { display: flex; align-items: center; gap: 7px; margin-top: 6px; font-size: 17px; color: var(--muted); }
+
+/* The four numbers. Each is a button that opens its evidence. */
+.brand-screen .brand-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 2fr); gap: 14px; margin-top: 22px; }
+.brand-screen .brand-stat { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr; grid-template-areas: "label" "value" "foot"; text-align: left; padding: 18px 20px 16px; background: #fbfdfc; border: 1px solid var(--line); border-radius: var(--radius-card); transition: background-color .9s ease, border-color .9s ease, box-shadow .9s ease; }
+.brand-screen .brand-stat:hover { background: var(--mint-soft); border-color: #a9dccf; transition-duration: .25s; }
+.brand-screen .brand-stat > .brand-label { grid-area: label; }
+.brand-screen .brand-stat-value { grid-area: value; position: relative; display: block; margin: 8px 0 12px; font-size: clamp(56px, 4.4vw, 84px); line-height: 1.08; font-weight: 500; letter-spacing: -.045em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.brand-screen .brand-stat-value > span { display: inline-block; }
+.brand-screen .brand-stat-foot { grid-area: foot; align-self: end; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 550; color: var(--accent-deep); }
+
+/* Put-back rate: the number with the category beside it */
+.brand-screen .brand-stat-rate { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "label label" "value compare" "foot foot"; column-gap: 30px; }
+.brand-screen .brand-stat-rate.is-above .brand-stat-value { color: var(--brand-amber-ink); }
+.brand-screen .brand-compare { grid-area: compare; align-self: center; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.brand-screen .brand-bar { display: grid; grid-template-columns: 108px minmax(40px, 1fr) 46px; align-items: center; gap: 12px; font-size: 15px; color: var(--muted); }
+.brand-screen .brand-bar b { font-size: 17px; font-weight: 600; text-align: right; color: var(--ink); font-variant-numeric: tabular-nums; }
+.brand-screen .brand-bar-track { display: block; height: 12px; overflow: hidden; border-radius: 8px; background: #e3eeea; }
+.brand-screen .brand-bar-track i { display: block; height: 100%; border-radius: 8px; background: var(--accent); transition: width .9s cubic-bezier(.2, .8, .2, 1); }
+.brand-screen .brand-bar.is-category .brand-bar-track i { background: #9db4ae; }
+.brand-screen .brand-compare.is-above .brand-bar.is-product .brand-bar-track i { background: var(--amber); }
+.brand-screen .brand-compare.is-above .brand-bar.is-product b { color: var(--brand-amber-ink); }
+.brand-screen .brand-verdict { font-size: 16px; font-weight: 600; color: var(--accent-deep); }
+.brand-screen .brand-compare.is-above .brand-verdict { color: var(--brand-amber-ink); }
+
+/* A number that just changed. A plain state, not a keyframe: the global reduced-motion rule cuts animations
+   to 0.01 ms (Windows with animation effects off), which would erase the highlight. It fades out on removal. */
+.brand-screen .brand-stat.is-new { background: var(--mint); border-color: var(--accent); box-shadow: 0 0 0 5px #2dbdb02e; transition-duration: .2s; }
+.brand-screen .brand-stat-puts.is-new,
+.brand-screen .brand-stat-rate.is-above.is-new { background: var(--amber-soft); border-color: var(--amber); box-shadow: 0 0 0 5px #e7ad5040; }
+.brand-screen .brand-delta { position: absolute; top: -14px; right: 16px; padding: 6px 12px; border-radius: 30px; background: var(--ink); color: #fff; font-size: 15px; font-weight: 650; line-height: 1.2; box-shadow: 0 6px 18px #183e3b2e; pointer-events: none; }
+.brand-screen .brand-stat-puts .brand-delta,
+.brand-screen .brand-stat-rate.is-above .brand-delta { background: var(--brand-amber-ink); }
+
+/* Hidden zone: below the privacy floor */
+.brand-screen .brand-card.is-hidden { background: #fbfdfc; }
+.brand-screen .brand-hidden { display: flex; align-items: center; gap: 20px; margin-top: 22px; padding: 24px 28px; border: 1.5px dashed #bfd6cf; border-radius: var(--radius-card); background: var(--surface); }
+.brand-screen .brand-hidden-icon { display: grid; place-items: center; flex-shrink: 0; width: 56px; height: 56px; border-radius: 18px; background: var(--mint-soft); color: var(--accent-deep); }
+.brand-screen .brand-hidden h3 { font-size: 24px; line-height: 1.25; font-weight: 500; letter-spacing: -.5px; }
+.brand-screen .brand-hidden p { margin-top: 6px; font-size: 16px; line-height: 1.5; color: var(--muted); }
+.brand-screen .empty h3 { font-size: 26px; }
+.brand-screen .empty p { font-size: 16px; }
+
+.brand-screen .brand-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+@media (min-width: 1101px) {
+  /* No category to compare with: four equal tiles. */
+  .brand-screen .brand-stats.is-plain { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 1100px) {
+  .brand-screen .brand-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .brand-screen .brand-stat-rate { grid-column: 1 / -1; }
+}
+
+/* Phone: one row per number, value on the right */
+@media (max-width: 760px) {
+  .brand-screen .screen-heading { flex-wrap: wrap; gap: 18px; margin-bottom: 22px; }
+  .brand-screen .screen-heading p { font-size: 16px; }
+  .brand-screen .brand-category { width: 100%; grid-template-columns: auto minmax(0, 1fr); padding: 16px 18px; }
+  .brand-screen .brand-category strong { font-size: 46px; }
+  .brand-screen .brand-section-head { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .brand-screen .brand-card { padding: 18px; border-radius: 24px; }
+  .brand-screen .brand-card-head { grid-template-columns: auto minmax(0, 1fr); gap: 10px 14px; }
+  .brand-screen .brand-card-head > .pill { grid-column: 2; justify-self: start; }
+  .brand-screen .brand-tile,
+  .brand-screen .brand-tile .product-tile { width: 56px; height: 56px; min-height: 56px; border-radius: 15px; }
+  .brand-screen .brand-tile .product-brand { font-size: 9px; letter-spacing: .6px; }
+  .brand-screen .brand-card-title h2 { font-size: 22px; letter-spacing: -.5px; }
+  .brand-screen .brand-place { font-size: 15px; }
+  .brand-screen .brand-stats { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 18px; }
+  .brand-screen .brand-stat { grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; grid-template-areas: "label value" "foot value"; align-items: center; column-gap: 14px; padding: 14px 16px; border-radius: 17px; }
+  .brand-screen .brand-stat-rate { grid-column: auto; grid-template-rows: auto auto auto; grid-template-areas: "label value" "compare compare" "foot foot"; }
+  .brand-screen .brand-label { font-size: 12px; letter-spacing: .9px; }
+  .brand-screen .brand-stat-value { margin: 0; font-size: 50px; text-align: right; }
+  .brand-screen .brand-stat-foot { align-self: auto; font-size: 13px; }
+  .brand-screen .brand-compare { margin: 6px 0 12px; }
+  .brand-screen .brand-bar { grid-template-columns: 96px minmax(40px, 1fr) 40px; gap: 10px; }
+  .brand-screen .brand-delta { top: -12px; right: 12px; padding: 5px 10px; font-size: 13px; }
+  .brand-screen .brand-hidden { flex-direction: column; align-items: flex-start; gap: 14px; padding: 18px; }
+  .brand-screen .brand-hidden h3 { font-size: 21px; }
+  .brand-screen .brand-hidden p { font-size: 15px; }
+}

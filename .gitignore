@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+# Rebuilt by deploy/package.py on every deploy.
+deploy/build/
+# Runtime drop folder for the live path (step 3).
+clips/incoming/
+web/node_modules/
+# Footage of real people stays off GitHub; deploy.sh copies clips into the pod from disk.
+clips/**/*.mp4
+clips/**/*.mov
+.env

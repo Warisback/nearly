@@ -1,0 +1,23 @@
+/* QR card: the printed A6 card, full screen. Large enough to scan from a laptop at arm's length. */
+.qrcard-screen { display: flex; justify-content: center; padding-top: 22px; }
+.qrcard { --qr: min(300px, calc(100vw - 96px)); width: 100%; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "title" "code" "private" "small"; justify-items: center; text-align: center; padding: 30px 18px 28px; background: var(--mint-soft); border: 1px solid #cfe9df; border-radius: 24px; }
+.qrcard-title { grid-area: title; max-width: 14ch; margin: 0 0 24px; font-size: 31px; line-height: 1.1; letter-spacing: -.045em; font-weight: 500; text-wrap: balance; }
+.qrcard-code { grid-area: code; display: grid; place-items: center; padding: 12px; background: #fff; border-radius: 22px; box-shadow: 0 16px 44px #183e3b14; }
+.qrcard-code canvas { display: block; width: var(--qr) !important; height: var(--qr) !important; image-rendering: pixelated; }
+.qrcard-code canvas[hidden] { display: none; }
+.qrcard-failed { width: var(--qr); padding: 24px 10px; font-size: 16px; line-height: 1.5; color: var(--muted); }
+.qrcard-failed a { color: var(--accent-deep); font-weight: 600; text-decoration: underline; }
+.qrcard-private { grid-area: private; margin-top: 24px; font-size: 23px; font-weight: 600; letter-spacing: -.02em; }
+.qrcard-small { grid-area: small; display: flex; align-items: center; gap: 10px; margin-top: 12px; color: var(--muted); font-size: 16px; line-height: 1.45; text-align: left; }
+.qrcard-small svg { color: var(--accent-deep); }
+
+/* Landscape laptop or projector: words on the left, the code on the right. */
+@media (min-width: 761px) {
+  .qrcard-screen { padding-top: 30px; }
+  .qrcard { --qr: max(240px, min(520px, calc(100vh - 300px), 40vw)); max-width: 1320px; min-height: min(calc(100vh - 96px - 70px), 900px); grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: 1fr auto auto auto 1fr; grid-template-areas: ". code" "title code" "private code" "small code" ". code"; justify-items: start; align-items: center; column-gap: clamp(40px, 6vw, 110px); text-align: left; padding: clamp(32px, 6vh, 64px) clamp(36px, 6vw, 96px); border-radius: var(--radius-panel); }
+  .qrcard-title { max-width: 12ch; margin-bottom: 32px; font-size: clamp(40px, 3.7vw, 70px); line-height: 1.06; }
+  .qrcard-code { padding: clamp(14px, 2.2vh, 26px); border-radius: 32px; }
+  .qrcard-private { margin-top: 0; font-size: clamp(24px, 2vw, 36px); }
+  .qrcard-small { margin-top: 18px; font-size: clamp(16px, 1.15vw, 21px); align-items: flex-start; }
+  .qrcard-small svg { margin-top: 3px; }
+}

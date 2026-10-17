@@ -1,0 +1,8 @@
+[
+  { "zone_id": "B2-A", "sticker": 1, "x": 0.07, "y": 0.14, "width": 0.27, "height": 0.29 },
+  { "zone_id": "B2-B", "sticker": 2, "x": 0.36, "y": 0.14, "width": 0.27, "height": 0.29 },
+  { "zone_id": "B2-C", "sticker": 3, "x": 0.65, "y": 0.14, "width": 0.27, "height": 0.29 },
+  { "zone_id": "B1-A", "sticker": 4, "x": 0.07, "y": 0.55, "width": 0.27, "height": 0.29 },
+  { "zone_id": "B1-B", "sticker": 5, "x": 0.36, "y": 0.55, "width": 0.27, "height": 0.29 },
+  { "zone_id": "B1-C", "sticker": 6, "x": 0.65, "y": 0.55, "width": 0.27, "height": 0.29 }
+]

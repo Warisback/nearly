@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nearly · Save your list · A6 card</title>
+  <script>
+    // Paste the deployed /app URL here before printing, e.g. https://nearly.example/app/.
+    // Leave blank to use this page's app root automatically.
+    const APP_URL = '';
+  </script>
+  <link rel="stylesheet" href="../tokens.css">
+  <style>
+    @page { size: A6 portrait; margin: 0; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; color: var(--ink, #183e3b); background: var(--paper, #f4f8f5); font-family: var(--font, Arial, sans-serif); }
+    body { min-height: 100vh; display: grid; place-items: center; }
+    main { width: 105mm; height: 148mm; padding: 10mm 11mm; background: var(--mint-soft, #e7f7f1); display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .logo { width: 39mm; height: auto; align-self: flex-start; margin-bottom: 7mm; }
+    h1 { margin: 0; max-width: 80mm; font-size: 7mm; letter-spacing: -.4mm; font-weight: 500; line-height: 1.15; }
+    .qr-wrap { width: 60mm; height: 60mm; padding: 3mm; margin: 7mm 0 5mm; background: white; border-radius: 5mm; box-shadow: 0 2mm 8mm #183e3b08; }
+    canvas { width: 54mm !important; height: 54mm !important; display: block; image-rendering: pixelated; }
+    .private { margin: 0; font-size: 4.3mm; font-weight: 600; }
+    .small { margin: 3mm 0 0; font-size: 3mm; line-height: 1.5; color: var(--muted, #6e8782); }
+    .error { color: #975729; font-size: 12px; }
+    @media print { html, body { width: 105mm; height: 148mm; } main { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
+    @media screen and (max-width: 430px) { main { width: 100vw; height: auto; min-height: 100vh; justify-content: center; padding: 36px 30px; } .logo { margin-bottom: 32px; align-self: center; } }
+  </style>
+</head>
+<body>
+  <main>
+    <img class="logo" src="../brand/nearly-wordmark.svg" alt="Nearly">
+    <h1>Scan to save what you nearly bought today.</h1>
+    <div class="qr-wrap"><canvas id="qr" role="img" aria-label="Scan to opt in to Nearly for this visit"></canvas></div>
+    <p class="private">Only you see it.</p>
+    <p class="small">Opt in for this visit only.<br>No face recognition.</p>
+    <p id="error" class="error" hidden>Open this card from the app server to generate its QR code.</p>
+  </main>
+  <script src="qrcode.bundle.js"></script>
+  <script>
+    const root = APP_URL || new URL('../', window.location.href).href;
+    const target = root.replace(/#.*$/, '') + '#/optin?shopper_id=demo_07';
+    window.NearlyQRCode.toCanvas(document.getElementById('qr'), target, {
+      width: 648,
+      margin: 2,
+      errorCorrectionLevel: 'M',
+      color: { dark: '#183e3b', light: '#ffffff' },
+    }).catch(() => { document.getElementById('error').hidden = false; });
+  </script>
+</body>
+</html>

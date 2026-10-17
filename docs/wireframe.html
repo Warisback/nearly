@@ -1,0 +1,418 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body><title>Nearly Bought Wireframe</title><meta name="claude:viewport-fit-sides" content="cover"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"><style id="css">
+/* Layout: a planogram sheet. Masthead, then a sticky rail with tabs and save. Screens and logic run in sideways-scrolling bays like a shelf run; shelf-edge yellow tags every ID. */
+:root{
+  --paper:#f2f3ef;--surface:#ffffff;--sunk:#e7e9e3;--ink:#1a1e24;--muted:#59616a;--rule:#d2d6cf;
+  --label:#f4cc45;--label-ink:#2a2300;--good:#2b7449;--bad:#b83c2a;--warn:#95600c;--vast:#2f5791;
+  --good-bg:#e1efe5;--bad-bg:#f6e2de;--warn-bg:#f5ead3;--vast-bg:#e0e8f3;
+  --f-display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --s-2:.75rem;--s-1:.8125rem;--s0:.9375rem;--s1:1.125rem;--s2:1.5rem;--s3:2.5rem;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#111417;--surface:#191d22;--sunk:#22272d;--ink:#e5e8eb;--muted:#9ca4ad;--rule:#2d343b;--label:#e9c143;--label-ink:#1f1a00;--good:#62c48c;--bad:#ff8169;--warn:#e7aa52;--vast:#8fb1e6;--good-bg:#17301f;--bad-bg:#3a1d17;--warn-bg:#352812;--vast-bg:#18263a;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#111417;--surface:#191d22;--sunk:#22272d;--ink:#e5e8eb;--muted:#9ca4ad;--rule:#2d343b;--label:#e9c143;--label-ink:#1f1a00;--good:#62c48c;--bad:#ff8169;--warn:#e7aa52;--vast:#8fb1e6;--good-bg:#17301f;--bad-bg:#3a1d17;--warn-bg:#352812;--vast-bg:#18263a;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:var(--s0);line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 72px}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.15;margin:0;text-wrap:balance;font-weight:600}
+h1{font-size:var(--s3);font-weight:800;letter-spacing:-.015em}
+h2{font-size:var(--s2)}
+h3{font-size:var(--s1)}
+h4{font-size:var(--s0)}
+p{margin:0}
+:focus-visible{outline:2px solid var(--vast);outline-offset:2px}
+.wrap,.mast,.bar,.hint,.banner{max-width:1240px;margin-inline:auto}
+.mast{padding-block:28px 18px;display:grid;gap:8px}
+.eyebrow{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:var(--s-1);color:var(--muted)}
+.tagline{font-size:var(--s1);max-width:72ch}
+.sel{font-family:var(--f-mono);font-size:var(--s-2);font-weight:500;background:var(--label);color:var(--label-ink);padding:1px 6px;border-radius:2px;letter-spacing:.02em;white-space:nowrap}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-block:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding-block:8px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px}
+.tabs button{font:inherit;font-weight:500;font-size:var(--s-1);border:1px solid transparent;background:none;color:var(--muted);padding:6px 10px;border-radius:4px;cursor:pointer}
+.tabs button:hover{color:var(--ink);border-color:var(--rule)}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.acts{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.status{font-family:var(--f-mono);font-size:var(--s-2);color:var(--muted);padding-right:4px}
+.status.dirty{color:var(--warn)}
+.btn{font:inherit;font-size:var(--s-1);font-weight:500;border:1px solid var(--rule);background:var(--surface);color:var(--ink);padding:6px 12px;border-radius:4px;cursor:pointer}
+.btn:hover:not(:disabled){border-color:var(--ink)}
+.btn.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.sm{padding:3px 8px;font-size:var(--s-2)}
+.hint{margin-top:10px;font-size:var(--s-1);color:var(--muted)}
+.banner{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:10px 12px;border-radius:4px;background:var(--vast-bg);font-size:var(--s-1)}
+.banner span{flex:1 1 240px;min-width:0}
+.banner-ok{background:var(--good-bg)}
+.banner-conflict{background:var(--warn-bg)}
+main.wrap{display:grid;gap:40px;padding-top:24px}
+.row{display:grid;gap:14px;min-width:0}
+.rowhead{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:end;justify-content:space-between}
+.rowhead>div{min-width:0}
+.rowhead p{color:var(--muted);font-size:var(--s-1);max-width:72ch;margin-top:2px}
+.ed{outline:none;border-radius:2px;cursor:text;white-space:pre-wrap;overflow-wrap:anywhere;text-decoration:underline dashed transparent;text-underline-offset:3px}
+.ed:hover{text-decoration-color:var(--muted)}
+.ed:focus{background:color-mix(in srgb,var(--label) 22%,transparent);box-shadow:0 0 0 2px var(--label)}
+.ed:empty{display:inline-block;min-width:4ch}
+.ed:empty::before{content:attr(data-ph);color:var(--muted);opacity:.75}
+.bay{overflow-x:auto;padding:4px 4px 14px;margin-inline:-4px;scrollbar-width:thin}
+.track{display:flex;align-items:stretch;width:max-content}
+.arrow{align-self:center;padding-inline:6px;font-family:var(--f-mono);color:var(--muted);font-size:var(--s1)}
+.card-head{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ctl{margin-left:auto;display:inline-flex;gap:2px}
+.ctl button{font:inherit;font-size:.7rem;line-height:1;border:1px solid var(--rule);background:var(--surface);color:var(--muted);padding:4px 6px;border-radius:3px;cursor:pointer}
+.ctl button:hover:not(:disabled){color:var(--ink);border-color:var(--ink)}
+.ctl button:disabled{opacity:.35;cursor:default}
+.ctl button.armed{color:var(--bad);border-color:var(--bad)}
+.scr{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:1.5px solid var(--ink);padding:12px;width:320px;border-radius:6px}
+.scr-phone{width:240px;border-radius:24px;padding:14px 14px 18px}
+.scr-print{width:240px;border-radius:2px;border-style:dashed}
+.kind{font:inherit;font-family:var(--f-mono);font-size:var(--s-2);border:1px solid var(--rule);background:none;color:var(--muted);padding:1px 6px;border-radius:2px;cursor:pointer}
+.kind:hover{color:var(--ink);border-color:var(--ink)}
+.who{font-size:var(--s-1);color:var(--muted)}
+.frame{background:var(--sunk);border-radius:4px;padding:8px;flex:1;display:grid;align-content:start;gap:4px}
+.scr-phone .frame{border-radius:14px}
+.lines{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.wire li{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:6px 8px;font-size:var(--s-1);line-height:1.4}
+.addl{font:inherit;font-size:var(--s-2);color:var(--muted);background:none;border:0;padding:2px 0 0;cursor:pointer;justify-self:start;text-align:left}
+.addl:hover{color:var(--ink);text-decoration:underline}
+.states{display:grid;gap:6px}
+.lbl{font-family:var(--f-mono);font-size:var(--s-2);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.lines.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chips li{font-size:var(--s-2);border:1px solid var(--rule);border-radius:999px;padding:2px 9px}
+.note{font-size:var(--s-1);color:var(--muted);border-top:1px dashed var(--rule);padding-top:8px}
+.step,.part{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:12px;width:236px}
+.bul{gap:4px;font-size:var(--s-1)}
+.bul li{position:relative;padding-left:15px}
+.bul li::before{content:"";position:absolute;left:2px;top:.6em;width:6px;height:6px;border:1.5px solid var(--muted);border-radius:1px}
+ol.bul{counter-reset:n}
+ol.bul li{counter-increment:n;padding-left:26px}
+ol.bul li::before{content:counter(n);border:0;width:auto;height:auto;top:0;left:2px;font-family:var(--f-mono);font-size:var(--s-2);line-height:1.9;color:var(--muted)}
+ol.bul li.hero{background:color-mix(in srgb,var(--label) 32%,transparent);border-radius:3px;padding-block:4px;padding-right:6px}
+ol.bul li.hero::before{top:4px}
+.owner{margin-top:auto;font-size:var(--s-1);display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;border-top:1px solid var(--rule);padding-top:8px}
+.tag{font:inherit;font-family:var(--f-mono);font-size:var(--s-2);border:0;border-radius:2px;padding:2px 6px;cursor:pointer;background:var(--sunk);color:var(--ink)}
+.tag-provided{background:var(--vast-bg);color:var(--vast)}
+.tag-ours{background:var(--ink);color:var(--paper)}
+.tag-risky{background:var(--bad-bg);color:var(--bad)}
+.tag-stretch{background:var(--warn-bg);color:var(--warn)}
+.tag-input{background:var(--sunk);color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:var(--s-1);color:var(--muted);align-items:center}
+.legend .tag{cursor:default}
+.layer{display:grid;gap:10px;padding-top:14px;border-top:1px solid var(--rule)}
+.layer-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.layer-head .ctl{margin-left:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.cards .part{width:auto;min-width:0}
+.contract{display:block;width:100%;font-family:var(--f-mono);font-size:var(--s-1);line-height:1.55;background:var(--surface);color:var(--ink);border:1px solid var(--rule);border-radius:4px;padding:12px 14px;resize:vertical;overflow:auto;tab-size:2}
+.verdict{font-family:var(--f-display);font-size:var(--s1);font-weight:600;line-height:1.45;max-width:78ch}
+.counts{display:flex;flex-wrap:wrap;gap:6px}
+.counts .st{display:inline-block;margin:0;cursor:default}
+.matrix{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--surface)}
+.matrix table{border-collapse:collapse;width:100%;min-width:1180px;font-size:var(--s-1)}
+.matrix th,.matrix td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--rule)}
+.matrix thead th{background:var(--sunk);font-weight:600}
+.matrix tbody th{font-weight:600;width:13%}
+.matrix td{width:14%}
+.matrix td.vcell{background:color-mix(in srgb,var(--sunk) 55%,transparent)}
+.matrix td.rowctl{width:1%;white-space:nowrap}
+.matrix tbody tr:last-child>*{border-bottom:0}
+.srcname{display:block;font-family:var(--f-display);font-size:var(--s0)}
+.srcsub{display:block;font-weight:400;color:var(--muted);font-size:var(--s-2);margin-top:2px}
+.st{display:block;font:inherit;font-family:var(--f-mono);font-size:var(--s-2);font-weight:500;border:0;border-radius:2px;padding:2px 6px;margin-bottom:4px;cursor:pointer;width:max-content}
+.st-yes{background:var(--good-bg);color:var(--good)}
+.st-part{background:var(--warn-bg);color:var(--warn)}
+.st-no{background:var(--bad-bg);color:var(--bad)}
+.st-todo{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:32px}
+.two>*{min-width:0}
+.blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:28px 32px}
+.block{border-top:2px solid var(--ink);padding-top:10px;display:grid;gap:10px;align-content:start;min-width:0}
+.block.wide{grid-column:1/-1}
+.block-head{display:flex;gap:8px;align-items:start}
+.block-head h3{flex:1;min-width:0}
+.para{max-width:74ch}
+.block.wide .para{font-size:var(--s1)}
+.block .bul{font-size:var(--s0)}
+.panel{position:fixed;inset:0;z-index:20;background:color-mix(in srgb,var(--ink) 45%,transparent);display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.panel-in{background:var(--surface);color:var(--ink);border-radius:6px;padding:18px;width:min(640px,100%);display:grid;gap:10px;max-height:100%;overflow:auto}
+.panel-in p{font-size:var(--s-1);color:var(--muted)}
+.panel-acts{display:flex;gap:8px;flex-wrap:wrap}
+.err{color:var(--bad)}
+@media (max-width:560px){h1{font-size:2rem}.bar{position:static}.scr{width:280px}.scr-phone,.scr-print{width:230px}.step{width:220px}.blocks{grid-template-columns:1fr}}
+</style><div id="root"></div><script type="application/json" id="state">{"rev":"2026-10-17T08:30:00.000Z","name":"Nearly","tagline":"Shelf cameras see what the till never does: what people picked up and put back. One event stream, three permissioned views, and a price for shelf space nobody can measure today.","screens":[{"id":"s1","kind":"print","title":"Entrance opt-in","who":"the shopper, at the door","lines":["QR card: “Scan to save your nearly-bought list”","Shopper holds a Clubcard-style QR up to the entrance camera","The QR is linked to today’s track, for this visit only","No scan means anonymous counts only"],"states":["Not scanned: anonymous","Scanned: linked to a demo loyalty ID","Declined"],"note":"Consent and identity in one gesture. No face matching anywhere."},{"id":"s2","kind":"desktop","title":"Live shelf monitor","who":"the demo screen and store staff","lines":["Camera feed with shelf zones drawn on: Bay 2, shelves A to C","Pipeline strip: uploaded → 5 s segments → Cosmos check → event saved","Event ticker: 14:02:11 · shopper #3 · Walkers Salt & Vinegar · put back · 0.82","Seconds from action to saved event, shown live"],"states":["Waiting for upload","Processing","Event landed","Can’t tell (shown, never hidden)"],"note":"Demo keys: L steps the scripted events, G jumps to the hero moment, R resets for a retake."},{"id":"s3","kind":"phone","title":"Nearly bought","who":"an opted-in shopper","lines":["Today’s list: things you picked up and put back","Each row: product, shelf price, time, “Ping me under £1.20”","Ping: “Walkers Salt & Vinegar is £1.10 with Clubcard today”","Delete this visit, one tap"],"states":["Empty: “Nothing nearly bought yet”","New item lands (hero)","Price-drop ping"],"note":"Shows this shopper’s own rows only. Getting something back is what keeps people opted in."},{"id":"s4","kind":"desktop","title":"Brand view","who":"Walkers’ shopper-marketing team","lines":["Their own products only, totals only","Views at their display, pick-ups, put-backs, put-back rate against the category","Hidden until at least 5 shoppers (privacy floor)","Every number opens its evidence: the clips and the agent run behind it"],"states":["Below the privacy floor: “Not enough shoppers yet”","Normal","Evidence drawer open"],"note":"Same events as the shopper’s list, with a different permission. This is the beat for the VAST judges."},{"id":"s5","kind":"desktop","title":"Store view","who":"the store manager","lines":["Footfall heatmap on the floor plan, all cameras","Attention heatmap: time spent facing each shelf zone","Dead zones, and missed reaches into empty slots","Before and after: did the new layout change pick-ups?"],"states":["Today","Compare two weeks","Missed-reach alert"],"note":"A supporting screen, not the headline. Show the heatmap’s error against NVIDIA’s ground truth."},{"id":"s6","kind":"desktop","title":"Shelf space price","who":"the store’s retail-media manager","lines":["Per end-cap: qualified views this week","Views × CPM (£ per 1,000 views) = in-store media she can sell","End-cap 3: 18,400 views × £8 = £147 a week (example)","40 end-caps: about £306k a year for one store (example)"],"states":["Measured week","Forecast for a new layout"],"note":"The demo ends here. Swap the example numbers for measured ones and a CPM an expert has checked."}],"flow":[{"id":"f1","tag":"input","title":"Cameras","lines":["A phone over the products at your table (your own footage)","NVIDIA store scene for the heatmaps, if staff allow it","Downloaded sets for building and testing on the laptop"],"owner":"Teammate films at the venue"},{"id":"f2","tag":"provided","title":"VAST ingest","lines":["Upload to the team bucket fires the pipeline","5 s segments → YOLO11s → Cosmos caption → Embed1 vectors","One VastDB row per segment","Our ingest prompt asks about hands and shelves"],"owner":"You"},{"id":"f3","tag":"ours","title":"Detect and track","lines":["Person boxes per frame from the YOLO endpoint, sampled at 2 fps","ByteTrack per camera (supervision library)","YOLO pose gives wrist positions","The pipeline has no tracker, so this part is ours"],"owner":"You"},{"id":"f4","tag":"ours","title":"Floor and shelf map","lines":["Homography per camera from 4 taped floor marks","planogram.json: zone outline → product, brand, price","Feet position → floor cell, for the heatmaps","Wrist inside a zone → candidate interaction"],"owner":"Teammate"},{"id":"f5","tag":"risky","title":"Cosmos checks it","lines":["Closed question on the clip around the candidate","Answer: take, put back, touch or can’t tell","Low confidence becomes can’t tell","Seconds per clip logged in Weave"],"owner":"You, working by 11:00"},{"id":"f6","tag":"risky","title":"Opt-in identity","lines":["QR seen at the entrance → the track gets a shopper ID","Handoff between cameras by timing and top colour","Fallback: one camera, one shopper at a time"],"owner":"You"},{"id":"f7","tag":"ours","title":"Event tables","lines":["shelf_events in VastDB: who, where, product, action, confidence, clip","zone_stats rolled up per hour","agent_runs: every claim cites the events it used"],"owner":"You"},{"id":"f8","tag":"ours","title":"Permissioned views","lines":["Shopper: their own rows","Brand: own products, totals, at least 5 shoppers","Store: every zone, anonymous","Same query, the role decides the answer"],"owner":"Teammate"},{"id":"f9","tag":"ours","title":"Agent acts","lines":["Price-drop ping to an opted-in shopper","Missed-reach alert to staff","Weekly brand report and shelf price quote","LLM on W&B Inference, traced in Weave"],"owner":"Teammate"}],"system":{"layers":[{"id":"l1","title":"Capture","cards":[{"id":"c1","tag":"input","title":"Table shelf at the venue","lines":["6 distinct products on your table, phone on a stand above","Film the test set and gap shots in the first hour","4 tape marks on the table for the homography","H.264 mp4"]},{"id":"c2","tag":"input","title":"NVIDIA store scene","lines":["Scene 071 is on this laptop: 15 synced 1080p cameras, 31 people, 13 min","Floor homography, position and facing angle for every person","Cut to 2-minute 720p clips before uploading","Ask staff first: CC BY, and NVIDIA’s own data"]}]},{"id":"l2","title":"VAST platform (provided)","cards":[{"id":"c3","tag":"provided","title":"Bucket and pipeline","lines":["Upload fires segment → YOLO → Cosmos → Embed1","The trigger was down in NYC: keep a direct path that calls Cosmos (:8001) and Embed1 (:8003) yourselves"]},{"id":"c4","tag":"provided","title":"VastDB","lines":["Pipeline rows: caption, objects, vectors","Our tables sit beside them: shelf_events, zone_stats, shoppers, agent_runs","Query through ADBC or DuckDB"]},{"id":"c5","tag":"provided","title":"Search and ask API","lines":["Finds the clips behind any number","Rank results instead of using a cut-off (real matches scored 0.18–0.25)"]}]},{"id":"l3","title":"Our services (Python on the build machine)","cards":[{"id":"c6","tag":"ours","title":"tracker.py","lines":["YOLO boxes → ByteTrack → tracks per camera","Feet point → homography → floor x, y"]},{"id":"c7","tag":"ours","title":"zones.py","lines":["Reads planogram.json zone outlines","Wrist in zone → candidate with start, end, zone"]},{"id":"c8","tag":"risky","title":"verify.py","lines":["Clip around the candidate → Cosmos closed question","Returns action and confidence, or can’t tell","2.5–4 s per 5 s clip, with about 50 teams sharing GPUs"]},{"id":"c9","tag":"risky","title":"identity.py","lines":["Decodes the QR at the entrance (OpenCV)","Links the track to a shopper ID for this visit"]},{"id":"c10","tag":"ours","title":"rollup.py","lines":["zone_stats per hour","Heatmap grids: footfall, dwell, attention"]}]},{"id":"l4","title":"Agent and evals (W&B)","cards":[{"id":"c11","tag":"provided","title":"Agent","lines":["Nemotron or Llama on W&B Inference, with thinking off","Writes the brand report, price quote and pings","Logs each run to agent_runs with the event IDs it cites"]},{"id":"c12","tag":"ours","title":"Evals in Weave","lines":["Practice: RetailAction’s 75 put-backs and 3,624 takes","Live score: 20+ labelled clips filmed at your table","Confusion matrix, can’t-tell rate, seconds per clip","Heatmap error against the NVIDIA ground truth"]}]},{"id":"l5","title":"App","cards":[{"id":"c13","tag":"ours","title":"Web app at /app","lines":["One page with a role switch: shopper, brand, store","Polls the API every 2 s, no websockets","Mock seed data so the screens never wait on the backend"]}]}],"contract":"CONTRACT v1 · locked Sat 17 Oct\n\nPaths are relative to the app root (the app is served under /app, so call \"api/live\", never \"/api/live\").\nJSON only. GET routes never call a model. The UI polls every 2 s.\n\nShelfEvent {\n  event_id: \"ev_0141\", ts: \"2026-10-17T14:02:11Z\", camera_id: \"cam_shelf\", track_id: 3,\n  shopper_id: \"demo_07\" | null,     // null unless that shopper opted in; always null outside api/shopper\n  zone_id: \"B2-A\", product_id: \"walkers_sv_32g\", brand_id: \"walkers\",\n  action: \"look\" | \"take\" | \"put\" | \"touch\" | \"cant_tell\",\n  confidence: 0.82, clip_url: \"clips/ev_0141.mp4\" | null, latency_s: 27.4\n}\nProduct  { product_id, name, brand_id, zone_id, price_gbp: 1.35, clubcard_price_gbp: 1.10 | null }\nZoneStat { zone_id, product_id, views, takes, puts, put_rate, shoppers, hidden }   // hidden = shoppers < 5; counts are 0 when hidden\n\nGET  api/products                              → { products: Product[] }\nGET  api/live                                  → { stage: \"waiting\"|\"checking\"|\"saved\", clip_url: str|null, last_latency_s: float|null, events: ShelfEvent[] }   // newest first, max 20\nGET  api/shopper?shopper_id=demo_07            → { shopper_id, opted_in: bool, track_id: int|null, nearly_bought: ShelfEvent[], pings: [{ ts, product_id, text }] }\nGET  api/brand?brand_id=walkers                → { brand_id, privacy_floor: 5, category_put_rate: 0.09, zones: ZoneStat[] }\nGET  api/store                                 → { alerts: [{ ts, zone_id, kind: \"missed_reach\"|\"gap\", text }], before_after: { zone_id, label, takes_before, takes_after } | null }\nGET  api/heatmap?kind=footfall|dwell|attention → { kind, source, synthetic: bool, cell_m, origin_m: [x, y], width, height, cells: int[height][width], max, error_vs_truth: float|null }\nGET  api/price?zone_id=endcap_3&cpm=8          → { zone_id, views_week, cpm_gbp, gbp_week, endcaps, gbp_year_store, example: bool }\nGET  api/evidence?ref=ev_0141 | ref=B2-A:puts  → { title, events: ShelfEvent[], agent_run: { run_id, model, summary, cited_event_ids: str[] } | null }\nPOST api/optin  { shopper_id, qr }             → { shopper_id, track_id }\nPOST api/demo/step | api/demo/hero | api/demo/reset → { frame: int, label: str }\n\nSeed: mock/seed.json holds every GET response above for each demo frame (\"frames\"), plus the frame-independent\nones (\"static\") and evidence (\"evidence\"). The UI's USE_MOCK mode and the backend's scripted demo both read it.\nVastDB tables (backend only): shelf_events (ShelfEvent fields), zone_stats (zone_id, hour, footfall, dwell_s, views,\ntakes, puts, missed_reaches), agent_runs (run_id, ts, model, prompt, summary, cited_event_ids).\nIf table writes fail, the same rows live in data/*.json and no route changes.","questions":["Does the pipeline keep YOLO boxes for every frame, or one set per 5 s segment? If per segment, call the YOLO endpoint ourselves.","Can we upload our own clips, and the NVIDIA scenes? Ask staff at 08:30.","Answered tonight: the NVIDIA ground truth has a facing angle for every person, in degrees, 90° off the walking direction. Use it for the attention heatmap.","On the day, how does the phone footage get in: record a take then upload, or upload every 10 s?","What CPM does UK in-store media sell at? Ask the retail-media contact."]},"footage":{"summary":"Most gaps are now covered for building and testing on your laptop: 75 real put-backs, the NVIDIA store scene with a facing angle for every person, real-store cameras, and shelf actions including price checks. Three things exist nowhere online: a reach into an empty slot, a before/after layout change, and a pick-up followed by a walk to another product. Film those at the venue with the live beat. None of the downloads can go into the VAST stack unless staff say yes, because the event bans internet video.","sources":[{"id":"ra","name":"RetailAction","sub":"On this laptop. Real shoppers, 3,778 shelf clips (validation + test). Practice only."},{"id":"ss","name":"NVIDIA store scene 071","sub":"On this laptop. Synthetic, 15 cameras, 31 people, 13 min. CC BY. Ask staff."},{"id":"sh","name":"NVIDIA retail clips + MERL","sub":"On this laptop. 200 ceiling-dome clips and 106 overhead videos. Internal or research use."},{"id":"pr","name":"Perceive real stores","sub":"On this laptop. Real stores, 2–9 synced ceiling cameras. Non-commercial."},{"id":"own","name":"Your own footage","sub":"Film at the venue. The rules don’t ban it."}],"rows":[{"id":"r1","feature":"Footfall heatmap","cells":{"ra":{"s":"no","t":"Short clips at one shelf, no floor calibration"},"ss":{"s":"yes","t":"Floor homographies and true positions for 31 people over 13 min"},"sh":{"s":"no","t":"Single cameras, no floor calibration"},"pr":{"s":"yes","t":"Real stores, with calibration and floor tracks for 45 scenarios"},"own":{"s":"part","t":"A table-sized shop gives a tiny heatmap"}},"verdict":{"s":"yes","t":"Covered, synthetic and real"}},{"id":"r2","feature":"Dwell heatmap (where people stop)","cells":{"ra":{"s":"no","t":""},"ss":{"s":"yes","t":"People stand about half the time"},"sh":{"s":"part","t":"Clips are short"},"pr":{"s":"yes","t":"Real dwell in stores and showrooms"},"own":{"s":"todo","t":""}},"verdict":{"s":"yes","t":"Covered"}},{"id":"r3","feature":"Attention heatmap (facing a shelf)","cells":{"ra":{"s":"part","t":"Body pose for the labelled shopper only"},"ss":{"s":"yes","t":"Facing angle for everyone, standing too. Checked: it matches walking direction 95% of the time after a fixed 90° offset"},"sh":{"s":"yes","t":"MERL labels ‘inspect shelf’. NVIDIA captions say who examines items"},"pr":{"s":"part","t":"Stereo depth, no facing labels"},"own":{"s":"todo","t":""}},"verdict":{"s":"yes","t":"Covered"}},{"id":"r4","feature":"Take vs put-back (nearly bought)","cells":{"ra":{"s":"yes","t":"75 put-backs in 68 clips, 3,624 takes, 355 clips with no action"},"ss":{"s":"no","t":"Nobody picks anything up"},"sh":{"s":"part","t":"NVIDIA captions: about 97 pick-ups, 12 put-backs. MERL: reaches, no take/put label"},"pr":{"s":"no","t":""},"own":{"s":"todo","t":"10 put-backs at your table for the live score"}},"verdict":{"s":"yes","t":"Enough to build and test. Film a few for the demo"}},{"id":"r5","feature":"Hand-to-product lookup","cells":{"ra":{"s":"yes","t":"Touch point for every action, in both views"},"ss":{"s":"no","t":""},"sh":{"s":"part","t":"MERL reaches into a shelf, products not named"},"pr":{"s":"no","t":""},"own":{"s":"todo","t":"Map of the products you bring"}},"verdict":{"s":"yes","t":"Enough to build. Demo on your own"}},{"id":"r6","feature":"Brand views and shelf price (money screen)","cells":{"ra":{"s":"no","t":""},"ss":{"s":"part","t":"Views per zone at store scale, synthetic crowds"},"sh":{"s":"no","t":""},"pr":{"s":"part","t":"Real-store views, no product map"},"own":{"s":"todo","t":"Live numbers for the demo"}},"verdict":{"s":"part","t":"Method shown on two stores. Label the £ as examples"}},{"id":"r7","feature":"Missed reach (empty slot)","cells":{"ra":{"s":"part","t":"13 touches: reached in, didn’t take"},"ss":{"s":"no","t":""},"sh":{"s":"part","t":"MERL reach-and-retract cycles, none labelled as empty"},"pr":{"s":"no","t":""},"own":{"s":"todo","t":"Stage 5 at the venue"}},"verdict":{"s":"part","t":"A touch is the closest stand-in. Stage the real thing"}},{"id":"r8","feature":"Before and after a layout change","cells":{"ra":{"s":"no","t":""},"ss":{"s":"no","t":"One layout"},"sh":{"s":"no","t":""},"pr":{"s":"no","t":"Several stores, no labelled layout change"},"own":{"s":"todo","t":"Swap the products, film again"}},"verdict":{"s":"no","t":"Film it at the venue or keep it a slide"}},{"id":"r9","feature":"Path between products (took X, walked to Y)","cells":{"ra":{"s":"no","t":""},"ss":{"s":"part","t":"Paths, but no pick-ups"},"sh":{"s":"no","t":"Single shelf views"},"pr":{"s":"part","t":"Paths, but no pick-ups"},"own":{"s":"todo","t":"One 2-minute browse at the table"}},"verdict":{"s":"no","t":"Stretch. Film it at the venue"}},{"id":"r10","feature":"Handoff between cameras","cells":{"ra":{"s":"no","t":""},"ss":{"s":"yes","t":"Same person ID across 15 cameras"},"sh":{"s":"no","t":""},"pr":{"s":"yes","t":"Real multi-camera handoff, 2–9 cameras"},"own":{"s":"todo","t":""}},"verdict":{"s":"yes","t":"Covered"}},{"id":"r11","feature":"Price-check put-back (look at it, put it back)","cells":{"ra":{"s":"no","t":""},"ss":{"s":"no","t":""},"sh":{"s":"yes","t":"MERL ‘inspect product’ then a reach back into the shelf"},"pr":{"s":"no","t":""},"own":{"s":"part","t":"You can act it"}},"verdict":{"s":"part","t":"MERL shows it. A ceiling camera still can’t read the label"}},{"id":"r12","feature":"Live beat at the venue","cells":{"ra":{"s":"no","t":""},"ss":{"s":"no","t":""},"sh":{"s":"no","t":""},"pr":{"s":"no","t":""},"own":{"s":"todo","t":"Phone on a stand at your table, upload each take"}},"verdict":{"s":"todo","t":"Film at the venue"}}],"shots":["Bring 6 distinct products, a phone stand, tape and a printed QR card","Ask staff at 08:30 whether you can film at your table and upload the clips","Phone as high as the stand goes, looking down at the products","10 takes and 10 put-backs for the live score, 10–20 s each, one action per clip","5 reaches into an empty slot (missed reach)","Swap the products round, then 5 more takes (before and after)","One 2-minute browse: pick up X, walk to the other end, pick up Y (path between products)","The live beat: a judge scans the QR, picks up, puts back","Log each clip as you go: file, action, product","Only people who agreed to be filmed. H.264 mp4"],"onTheDay":["The starter repo says: don’t ingest videos from the internet. Everything in VAST-footage counts, so it stays on your laptop for building and testing unless staff say yes.","The best one to ask about is the NVIDIA store scene: CC BY, and NVIDIA’s own data.","The repo says nothing against clips you film yourselves, so the live beat and the gap shots can go through the pipeline.","Licences: RetailAction bans re-identifying people, MERL is research only, the NVIDIA retail clips are internal development only, Perceive is non-commercial. Fine for a hackathon prototype; don’t present them as your product’s data.","Everything is in C:\\Users\\yussu\\VAST-footage, with a README listing each source, its licence and its attribution."]},"pitch":{"blocks":[{"id":"p1","title":"One line","kind":"text","wide":true,"text":"The till only sees what’s in the basket. Our shelf camera sees what people picked up and put back, and turns it into one permissioned event stream: the shopper gets a nearly-bought list, the brand gets proof its display worked, and the store gets a price for shelf space it can’t measure today."},{"id":"p2","title":"The person and the moment","kind":"text","text":"Priya (persona) runs retail media for a UK grocer. This week she has to quote a crisps brand for the end-cap by the entrance. Today she prices it from footfall guesses, because nobody measures in-store ads. We give her measured views and put-backs for that exact end-cap."},{"id":"p3","title":"The money arc","kind":"text","text":"Last screen: End-cap 3 had 18,400 qualified views this week. At £8 per 1,000 views that’s £147 a week, or about £306k a year across 40 end-caps in one store. Example numbers until we’ve measured them and an expert has checked the CPM."},{"id":"p4","title":"Demo beats","kind":"numbered","wide":true,"items":["A judge scans the QR card at the ‘entrance’. They’re opted in for this visit.","They pick up the crisps, check the price and put them back.","★ About 30 seconds later the crisps land on their nearly-bought list, and the brand’s put-back count goes up by one. Same event, two views.","Their phone gets the ping: “Walkers Salt & Vinegar is £1.10 with Clubcard today.”","The store heatmap across the NVIDIA store’s cameras, with its measured error against ground truth.","End on money: what that end-cap is worth each week."]},{"id":"p5","title":"Why it wins: creativity","kind":"text","text":"None of the 85 SF and NY projects touched retail. Heatmap vendors sell anonymous counts to the store. We link a put-back to a shopper who opted in, and show three parties three different views of the same event."},{"id":"p6","title":"Why it wins: technical","kind":"text","text":"The detector proposes, Cosmos checks, the LLM acts. Our own tracker and floor mapping on top of the VAST pipeline, our own VastDB tables with lineage, and honest numbers: seconds per clip, put-back accuracy on our labelled clips, heatmap error against NVIDIA’s ground truth."},{"id":"p7","title":"Why it wins: real-world impact","kind":"text","text":"UK retail media was worth £3.7bn in 2025, up 17.5% (Advertising Association / WARC). In-store screens and end-caps are left out of that figure because nobody can measure them in a privacy-safe way. Opt-in like cookies, no face recognition, totals only for brands."},{"id":"p8","title":"Killer questions","kind":"list","wide":true,"items":["“Isn’t this Standard AI or Aura Vision?” They sell anonymous heatmaps to the store. We link the put-back to a shopper who opted in and give them something back, which is what keeps them opted in. The brand and store views are the same events with tighter permissions.","“How accurate is it?” On our 40 labelled clips it got [X]% of takes and [Y]% of put-backs right, and said ‘can’t tell’ on [Z]% instead of guessing. Here’s the Weave run.","“Is this legal in the UK?” It’s opt-in only, like accepting cookies. Scanning the QR is the consent and the link. There’s no face recognition, and brands only see totals once at least 5 shoppers are in them."]},{"id":"p9","title":"Assumptions to check","kind":"list","items":["Cosmos tells a take from a put-back on our shelf at least 70% of the time. Check in the first hour. (You)","Staff allow our own uploads and the NVIDIA scenes. Ask at 08:30. (Both)","Brands would pay for in-store views. Get one quote from someone in retail media. (Teammate)","The camera handoff works by 11:00. If not, one camera and the QR alone. (You)"]},{"id":"p10","title":"Cut order","kind":"numbered","items":["Never cut: one camera, one shelf, live take and put-back, the saved event, the shopper list, brand totals, the money screen","Cut first: the other use cases (keep them as one slide)","Then the attention heatmap","Then the camera handoff","Then the footfall heatmap"]},{"id":"p11","title":"Who owns what","kind":"list","items":["You: the Cosmos check, the upload path, the tracker, the event tables. The risky parts.","Teammate: the shelf map, the web app screens, the pitch, the demo video, the retail-media quote.","Confirm this in the first 30 minutes."]},{"id":"p12","title":"Day plan, Sat 17 Oct","kind":"list","items":["08:30 Arrive. Ask staff about uploads and the NVIDIA scenes","09:30 Build starts. You start on the Cosmos take/put check and the upload path. Teammate films the test set and gap shots at the table","11:00 Risky parts working, or switch to the fallback","14:30 Feature freeze (set an alarm)","14:30–15:45 Two full run-throughs, one recorded and watched. Record the demo video","15:45 Submit (set an alarm)","16:30 Deadline"]},{"id":"p13","title":"Honest odds","kind":"text","text":"Guess: about 1 in 5 to place. The biggest lever is a real put-back accuracy number on your own clips, plus one quote from someone who sells retail media."}]}}</script><script id="app">
+(function(){
+"use strict";
+var RESET=":root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}";
+var HEAD='<title>Nearly Bought Wireframe</title><meta name="claude:viewport-fit-sides" content="cover"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">';
+var SC="</scr"+"ipt>";
+var KEY="nearly-wireframe";
+var ORIGINAL=document.getElementById("state").textContent;
+var state=JSON.parse(ORIGINAL);
+var BASE=state.rev;
+var root=document.getElementById("root");
+var mode=(window.claude&&typeof window.claude.use==="function")?"wait":"file";
+var art=null,dirty=false,saving=false,banner=null,panel=null,conflictDraft=null,draftTimer=0,flashTimer=0,flashMsg="";
+var TABS=[["wire","Wireframe"],["system","System design"],["footage","Footage check"],["pitch","Pitch"]];
+var TAGS=["input","provided","ours","risky","stretch"];
+var TAGNAME={input:"Input",provided:"VAST / NVIDIA stack",ours:"We build",risky:"Risky: first 90 min",stretch:"Stretch"};
+var STATS=["yes","part","no","todo"];
+var STATNAME={yes:"Enough",part:"Partial",no:"None",todo:"Film it"};
+var COUNTNAME={yes:"covered",part:"partly covered",no:"not covered",todo:"film at the venue"};
+var KINDS=["desktop","phone","print"];
+var tab="wire";
+
+function store(fn){try{return fn();}catch(e){return null;}}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function getP(p){return p.split(".").reduce(function(o,k){return o==null?o:o[k];},state);}
+function setP(p,v){var ks=p.split("."),last=ks.pop(),o=state;ks.forEach(function(k){o=o[k];});o[last]=v;}
+function uid(){return "x"+Math.random().toString(36).slice(2,8);}
+function clean(o){if(Array.isArray(o))return o.filter(function(x){return !(typeof x==="string"&&x.trim()==="");}).map(clean);if(o&&typeof o==="object"){var r={};Object.keys(o).forEach(function(k){r[k]=clean(o[k]);});return r;}return o;}
+function cycle(list,v){return list[(list.indexOf(v)+1)%list.length];}
+function isTab(t){return TABS.some(function(x){return x[0]===t;});}
+
+var h0=(location.hash||"").slice(1);
+if(isTab(h0))tab=h0;else{var t0=store(function(){return localStorage.getItem(KEY+":tab");});if(isTab(t0))tab=t0;}
+var pending=store(function(){return JSON.parse(sessionStorage.getItem(KEY+":pending")||"null");});
+if(pending){
+  store(function(){sessionStorage.removeItem(KEY+":pending");});
+  if(pending.rev===BASE)banner={kind:"ok",text:"Saved. Anyone with the link now sees this version."};
+  else{conflictDraft=pending;banner={kind:"conflict",text:"Someone else saved first, so this is their version. Your edits are kept."};}
+}
+var draft=store(function(){return JSON.parse(localStorage.getItem(KEY+":draft")||"null");});
+if(draft&&draft.base===BASE&&draft.state&&!pending){
+  if(JSON.stringify(draft.state)!==JSON.stringify(state)){state=draft.state;dirty=true;banner={kind:"draft",text:"Restored edits you hadn’t saved yet in this browser."};}
+}else if(draft&&draft.base!==BASE){store(function(){localStorage.removeItem(KEY+":draft");});}
+
+function E(p,ph,multi){return '<span class="ed" contenteditable="true" spellcheck="true" data-path="'+p+'"'+(multi?"":" data-single")+' data-ph="'+esc(ph||"Type here")+'">'+esc(getP(p))+"</span>";}
+function L(p,o){
+  o=o||{};var a=getP(p)||[];var tg=o.ordered?"ol":"ul";
+  var h="<"+tg+' class="lines '+(o.cls||"bul")+'">';
+  a.forEach(function(t,i){
+    var hero=o.ordered&&/^\s*★/.test(t);
+    h+="<li"+(hero?' class="hero"':"")+'><span class="ed" contenteditable="true" spellcheck="true" data-single data-path="'+p+"."+i+'" data-list="'+p+'" data-idx="'+i+'" data-ph="'+esc(o.ph||"Empty line")+'">'+esc(t)+"</span></li>";
+  });
+  return h+"</"+tg+'><button type="button" class="addl" data-act="addline" data-list="'+p+'">+ '+(o.add||"line")+"</button>";
+}
+function CTL(arr,i,n,vert){
+  var a=vert?["▲","▼","Move up","Move down"]:["◀","▶","Move left","Move right"];
+  return '<span class="ctl"><button type="button" data-act="move" data-arr="'+arr+'" data-idx="'+i+'" data-dir="-1" aria-label="'+a[2]+'"'+(i===0?" disabled":"")+">"+a[0]+'</button><button type="button" data-act="move" data-arr="'+arr+'" data-idx="'+i+'" data-dir="1" aria-label="'+a[3]+'"'+(i===n-1?" disabled":"")+">"+a[1]+'</button><button type="button" data-act="del" data-arr="'+arr+'" data-idx="'+i+'" aria-label="Delete">×</button></span>';
+}
+function TAG(p){var t=getP(p)||"ours";return '<button type="button" class="tag tag-'+esc(t)+'" data-act="tag" data-path="'+p+'" title="Click to change the tag">'+esc(TAGNAME[t]||t)+"</button>";}
+
+function paneWire(){
+  var s=state.screens,f=state.flow,o="";
+  o+='<section class="row"><div class="rowhead"><div><h2>Screens</h2><p>Left to right in demo order. Each box lists what is on the screen, then the states it can be in. Click the frame label to switch between desktop, phone and print.</p></div><button type="button" class="btn" data-act="add" data-arr="screens">+ Screen</button></div><div class="bay"><div class="track">';
+  s.forEach(function(x,i){
+    var p="screens."+i;if(i)o+='<div class="arrow" aria-hidden="true">→</div>';
+    o+='<article class="scr scr-'+esc(x.kind)+'"><div class="card-head"><span class="sel">S'+(i+1)+'</span><button type="button" class="kind" data-act="kind" data-idx="'+i+'" title="Switch frame">'+esc(x.kind)+"</button>"+CTL("screens",i,s.length)+"</div><h3>"+E(p+".title","Screen name")+'</h3><p class="who">For '+E(p+".who","who")+'</p><div class="frame">'+L(p+".lines",{cls:"wire",ph:"Something on screen",add:"element"})+'</div><div class="states"><span class="lbl">States</span>'+L(p+".states",{cls:"chips",ph:"State",add:"state"})+'</div><p class="note">'+E(p+".note","Note",true)+"</p></article>";
+  });
+  o+='</div></div></section><section class="row"><div class="rowhead"><div><h2>Data and logic</h2><p>How one camera frame becomes a row on each screen. Click a tag to change it.</p></div><button type="button" class="btn" data-act="add" data-arr="flow">+ Step</button></div><div class="bay"><div class="track">';
+  f.forEach(function(x,i){
+    var p="flow."+i;if(i)o+='<div class="arrow" aria-hidden="true">→</div>';
+    o+='<article class="step"><div class="card-head"><span class="sel">F'+(i+1)+"</span>"+TAG(p+".tag")+CTL("flow",i,f.length)+"</div><h3>"+E(p+".title","Step name")+"</h3>"+L(p+".lines",{ph:"Detail"})+'<p class="owner"><span class="lbl">Owner</span>'+E(p+".owner","Who")+"</p></article>";
+  });
+  o+='</div></div><div class="legend">'+TAGS.map(function(t){return '<span class="tag tag-'+t+'">'+esc(TAGNAME[t])+"</span>";}).join("")+"</div></section>";
+  return o;
+}
+function paneSystem(){
+  var ls=state.system.layers,o='<section class="row"><div class="rowhead"><div><h2>Parts of the system</h2><p>Grouped by layer, top to bottom in the order the data moves.</p></div><button type="button" class="btn" data-act="add" data-arr="system.layers">+ Layer</button></div>';
+  ls.forEach(function(l,i){
+    var p="system.layers."+i;
+    o+='<div class="layer"><div class="layer-head"><h3>'+E(p+".title","Layer name")+"</h3>"+CTL("system.layers",i,ls.length,true)+'<button type="button" class="btn sm" data-act="add" data-arr="'+p+'.cards">+ Part</button></div><div class="cards">';
+    l.cards.forEach(function(c,j){var q=p+".cards."+j;o+='<article class="part"><div class="card-head">'+TAG(q+".tag")+CTL(p+".cards",j,l.cards.length)+"</div><h4>"+E(q+".title","Part name")+"</h4>"+L(q+".lines",{ph:"Detail"})+"</article>";});
+    o+="</div></div>";
+  });
+  o+='</section><section class="row"><div class="rowhead"><div><h2>Contract</h2><p>The data shapes and routes both builders work to. When it changes here, change it in both agent briefs too.</p></div></div><textarea id="contract" class="contract" data-path="system.contract" spellcheck="false" wrap="off" aria-label="Contract">'+esc(state.system.contract)+'</textarea></section><section class="row"><div class="rowhead"><div><h2>Open questions</h2><p>Answer these tonight or on arrival.</p></div></div>'+L("system.questions",{ph:"Question",add:"question"})+"</section>";
+  return o;
+}
+function cell(p,isV){
+  var c=getP(p);if(!c){setP(p,{s:"no",t:""});c=getP(p);}
+  return "<td"+(isV?' class="vcell"':"")+'><button type="button" class="st st-'+esc(c.s)+'" data-act="stat" data-path="'+p+'.s" title="Click to change">'+esc(STATNAME[c.s]||c.s)+"</button>"+E(p+".t","Note")+"</td>";
+}
+function paneFootage(){
+  var F=state.footage,src=F.sources,c={yes:0,part:0,no:0,todo:0};
+  F.rows.forEach(function(r){if(r.verdict&&c[r.verdict.s]!=null)c[r.verdict.s]++;});
+  var o='<section class="row"><p class="verdict">'+E("footage.summary","Summary",true)+'</p><div class="counts">'+STATS.map(function(s){return '<span class="st st-'+s+'">'+c[s]+" "+COUNTNAME[s]+"</span>";}).join("")+"</div></section>";
+  o+='<section class="row"><div class="rowhead"><div><h2>Each analytic against each footage source</h2><p>Click a status to change it. The verdict column is the call for the demo.</p></div><button type="button" class="btn" data-act="add" data-arr="footage.rows">+ Analytic</button></div><div class="matrix"><table><thead><tr><th scope="col">Analytic</th>';
+  src.forEach(function(s,k){o+='<th scope="col"><span class="srcname">'+E("footage.sources."+k+".name","Source")+'</span><span class="srcsub">'+E("footage.sources."+k+".sub","Where it is")+"</span></th>";});
+  o+='<th scope="col">Verdict</th><th scope="col"><span class="lbl">Order</span></th></tr></thead><tbody>';
+  F.rows.forEach(function(r,i){
+    var p="footage.rows."+i;o+='<tr><th scope="row">'+E(p+".feature","Analytic")+"</th>";
+    src.forEach(function(s){o+=cell(p+".cells."+s.id);});
+    o+=cell(p+".verdict",true)+'<td class="rowctl">'+CTL("footage.rows",i,F.rows.length,true)+"</td></tr>";
+  });
+  o+='</tbody></table></div></section><div class="two"><section class="row"><h2>What to film at the venue</h2>'+L("footage.shots",{ph:"Shot",add:"shot"})+'</section><section class="row"><h2>Can we use it on the day?</h2>'+L("footage.onTheDay",{ph:"Note",add:"note"})+"</section></div>";
+  return o;
+}
+function panePitch(){
+  var bs=state.pitch.blocks,o='<section class="row"><div class="rowhead"><div><h2>Concept and pitch</h2><p>Every line should be a customer moment or a money number. Start a demo beat with ★ to mark the hero moment.</p></div><button type="button" class="btn" data-act="add" data-arr="pitch.blocks">+ Section</button></div><div class="blocks">';
+  bs.forEach(function(b,i){
+    var p="pitch.blocks."+i;
+    o+='<section class="block'+(b.wide?" wide":"")+'"><div class="block-head"><h3>'+E(p+".title","Section name")+"</h3>"+CTL("pitch.blocks",i,bs.length,true)+"</div>"+(b.kind==="text"?'<p class="para">'+E(p+".text","Write here",true)+"</p>":L(p+".items",{ordered:b.kind==="numbered",ph:"Line"}))+"</section>";
+  });
+  return o+"</div></section>";
+}
+function statusText(){
+  if(flashMsg)return flashMsg;
+  if(saving)return "Saving…";
+  if(mode==="readonly")return "View only";
+  if(mode==="nosave")return dirty?"Not saved here. Use Copy JSON":"Saving is off here";
+  if(mode==="file")return dirty?"Unsaved. Download to keep":"Local copy";
+  if(mode==="wait")return dirty?"Unsaved changes":"Connecting…";
+  return dirty?"Unsaved changes":"Saved";
+}
+function actsHtml(){
+  var b=mode==="file"?'<button type="button" class="btn pri" data-act="save">Download file</button>':'<button type="button" class="btn pri" data-act="save"'+(mode==="artifact"&&!saving?"":" disabled")+">Save</button>";
+  return '<div class="acts"><span class="status'+(dirty&&!flashMsg?" dirty":"")+'" aria-live="polite">'+esc(statusText())+"</span>"+b+'<button type="button" class="btn" data-act="copy">Copy JSON</button><button type="button" class="btn" data-act="paste">Paste JSON</button></div>';
+}
+function refreshActs(){var el=root.querySelector(".acts");if(el)el.outerHTML=actsHtml();}
+function flash(m,ms){flashMsg=m;refreshActs();clearTimeout(flashTimer);flashTimer=setTimeout(function(){flashMsg="";refreshActs();},ms||4500);}
+function hintText(){return mode==="file"?"Click any text to edit it. Enter adds a line; Backspace on an empty line removes it. Download file saves a copy with your edits: put it in place of wireframe.html.":"Click any text to edit it. Enter adds a line; Backspace on an empty line removes it. Save publishes your edits for everyone with the link, and Claude can read them back.";}
+function bannerHtml(){
+  if(!banner)return "";
+  var b='<div class="banner banner-'+banner.kind+'" role="status"><span>'+esc(banner.text)+"</span>";
+  if(banner.kind==="draft")b+='<button type="button" class="btn sm" data-act="discard">Discard them</button>';
+  if(banner.kind==="conflict")b+='<button type="button" class="btn sm" data-act="reapply">Put my edits back</button>';
+  return b+'<button type="button" class="btn sm" data-act="dismiss">Close</button></div>';
+}
+function panelHtml(){
+  if(!panel)return "";var paste=panel.kind==="paste";
+  return '<div class="panel" role="dialog" aria-modal="true" aria-labelledby="ptitle"><div class="panel-in"><h2 id="ptitle">'+(paste?"Paste wireframe JSON":"Copy this JSON")+"</h2><p>"+(paste?"Paste JSON from Copy JSON, or JSON Claude gave you. It replaces what is on the page until you save.":"The clipboard is blocked here. The text is selected, so copy it with Ctrl+C or ⌘C.")+'</p><textarea id="jsonbox" class="contract" rows="14" spellcheck="false" wrap="off" aria-label="Wireframe JSON">'+esc(panel.text)+'</textarea><p class="err" id="panelerr" aria-live="polite"></p><div class="panel-acts">'+(paste?'<button type="button" class="btn pri" data-act="load">Load it</button>':"")+'<button type="button" class="btn" data-act="close">Close</button></div></div></div>';
+}
+function grow(ta){ta.rows=Math.max(8,ta.value.split("\n").length+1);}
+function render(keepScroll){
+  var bays=keepScroll?[].map.call(root.querySelectorAll(".bay"),function(x){return x.scrollLeft;}):[];
+  var body=tab==="system"?paneSystem():tab==="footage"?paneFootage():tab==="pitch"?panePitch():paneWire();
+  root.innerHTML='<header class="mast"><p class="eyebrow"><span class="sel">VAST Builders Challenge · London · Sat 17 Oct</span><span>Working name, click it to rename</span></p><h1>'+E("name","Product name")+'</h1><p class="tagline">'+E("tagline","One line",true)+'</p></header><div class="bar"><nav class="tabs" role="tablist" aria-label="Sections">'+TABS.map(function(t){return '<button type="button" role="tab" aria-selected="'+(t[0]===tab)+'" data-act="tab" data-tab="'+t[0]+'">'+t[1]+"</button>";}).join("")+"</nav>"+actsHtml()+'</div><p class="hint">'+esc(hintText())+"</p>"+bannerHtml()+'<main class="wrap">'+body+"</main>"+panelHtml();
+  [].forEach.call(root.querySelectorAll(".bay"),function(x,i){if(bays[i])x.scrollLeft=bays[i];});
+  var ta=root.querySelector("#contract");if(ta)grow(ta);
+}
+function focusPath(p){
+  var el=root.querySelector('[data-path="'+p+'"]');if(!el)return;el.focus();
+  try{var r=document.createRange();r.selectNodeContents(el);r.collapse(false);var s=window.getSelection();s.removeAllRanges();s.addRange(r);}catch(e){}
+}
+function markDirty(){
+  var was=dirty;dirty=true;if(!was)refreshActs();
+  clearTimeout(draftTimer);
+  draftTimer=setTimeout(function(){store(function(){localStorage.setItem(KEY+":draft",JSON.stringify({base:BASE,state:state}));});},500);
+}
+function add(arrP){
+  var a=getP(arrP),tpl,focus="title";
+  if(arrP==="screens")tpl={id:uid(),kind:"desktop",title:"",who:"",lines:[""],states:["Default"],note:""};
+  else if(arrP==="flow")tpl={id:uid(),tag:"ours",title:"",lines:[""],owner:""};
+  else if(/\.cards$/.test(arrP))tpl={id:uid(),tag:"ours",title:"",lines:[""]};
+  else if(arrP==="system.layers")tpl={id:uid(),title:"",cards:[]};
+  else if(arrP==="footage.rows"){tpl={id:uid(),feature:"",cells:{},verdict:{s:"part",t:""}};state.footage.sources.forEach(function(s){tpl.cells[s.id]={s:"no",t:""};});focus="feature";}
+  else if(arrP==="pitch.blocks")tpl={id:uid(),title:"",kind:"text",text:""};
+  else return;
+  a.push(tpl);markDirty();render(true);focusPath(arrP+"."+(a.length-1)+"."+focus);
+}
+function move(arrP,i,d){var a=getP(arrP),j=i+d;if(j<0||j>=a.length)return;var t=a[i];a[i]=a[j];a[j]=t;markDirty();render(true);}
+function buildDoc(s){
+  var css=document.getElementById("css").textContent,app=document.getElementById("app").textContent;
+  var json=JSON.stringify(s).replace(/</g,"\\u003c");
+  return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>'+RESET+"</style></head><body>"+HEAD+'<style id="css">'+css+'</style><div id="root"></div><script type="application/json" id="state">'+json+SC+'<script id="app">'+app+SC+"</body></html>";
+}
+function save(){
+  var next=clean(state);next.rev=new Date().toISOString();
+  if(mode==="file"){
+    var blob=new Blob([buildDoc(next)],{type:"text/html"}),a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);a.download="wireframe.html";document.body.appendChild(a);a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);
+    flash("Downloaded. Put it in place of wireframe.html.",7000);return;
+  }
+  if(mode!=="artifact"||saving)return;
+  saving=true;refreshActs();attempt(next,false);
+}
+function attempt(next,retried){
+  store(function(){sessionStorage.setItem(KEY+":pending",JSON.stringify(next));});
+  art.publish(buildDoc(next)).then(function(){
+    store(function(){localStorage.removeItem(KEY+":draft");});
+  },function(e){
+    var c=e&&e.code;
+    if(c==="conflict"){flash("Someone saved first. Loading their version…",10000);return;}
+    store(function(){sessionStorage.removeItem(KEY+":pending");});
+    if(c==="upstream_error"&&!retried){setTimeout(function(){attempt(next,true);},800+Math.random()*1200);return;}
+    saving=false;
+    if(["not_writer","not_granted","consent_required","capability_disabled","capability_removed","not_declared"].indexOf(c)>=0){
+      mode="readonly";banner={kind:"info",text:"This view is read-only. Your edits stay in this browser. Use Copy JSON to send them to the owner or to Claude."};render(true);return;
+    }
+    if(c==="rate_limited"){flash("Saving too often. Wait a minute, then save again.",7000);return;}
+    if(c==="too_large"){flash("Too big to save. Remove some content first.",7000);return;}
+    flash("Couldn’t save. Try again in a moment.",7000);
+  });
+}
+function copyJSON(){
+  var t=JSON.stringify(clean(state),null,2);
+  function fallback(){panel={kind:"copy",text:t};render(true);var b=root.querySelector("#jsonbox");if(b){b.focus();b.select();}}
+  try{navigator.clipboard.writeText(t).then(function(){flash("Copied. Paste it to Claude to regenerate the page.");},fallback);}catch(e){fallback();}
+}
+function loadJSON(){
+  var t=root.querySelector("#jsonbox"),err=root.querySelector("#panelerr");
+  try{
+    var x=JSON.parse(t.value);
+    if(!x||!Array.isArray(x.screens)||!Array.isArray(x.flow)||!x.system||!x.footage||!x.pitch)throw new Error("shape");
+    x.rev=BASE;state=x;panel=null;markDirty();render(true);flash("Loaded. Save to keep it.");
+  }catch(e){if(err)err.textContent="That isn’t wireframe JSON. Copy it again with Copy JSON and paste the whole thing.";}
+}
+
+root.addEventListener("input",function(e){
+  var el=e.target;if(!el.dataset||!el.dataset.path)return;
+  var v=el.tagName==="TEXTAREA"?el.value:(el.hasAttribute("data-single")?el.textContent:el.innerText.replace(/\n$/,""));
+  setP(el.dataset.path,v.replace(/ /g," "));
+  if(el.tagName==="TEXTAREA")grow(el);
+  markDirty();
+});
+root.addEventListener("keydown",function(e){
+  var el=e.target;if(e.isComposing||!el.classList||!el.classList.contains("ed"))return;
+  if(e.key==="Enter"&&!e.shiftKey&&el.hasAttribute("data-single")){
+    e.preventDefault();
+    if(el.dataset.list){var arr=getP(el.dataset.list),i=+el.dataset.idx;arr.splice(i+1,0,"");markDirty();render(true);focusPath(el.dataset.list+"."+(i+1));}
+    else el.blur();
+    return;
+  }
+  if(e.key==="Backspace"&&el.dataset.list&&el.textContent===""){
+    e.preventDefault();var a=getP(el.dataset.list),j=+el.dataset.idx;a.splice(j,1);markDirty();render(true);if(j>0)focusPath(el.dataset.list+"."+(j-1));
+    return;
+  }
+  if(e.key==="Escape")el.blur();
+});
+root.addEventListener("paste",function(e){
+  var el=e.target&&e.target.closest&&e.target.closest(".ed");if(!el)return;
+  e.preventDefault();
+  var t=((e.clipboardData||window.clipboardData).getData("text/plain")||"");
+  if(el.hasAttribute("data-single"))t=t.replace(/\s*\n\s*/g," ");
+  var ok=false;try{ok=document.execCommand("insertText",false,t);}catch(x){}
+  if(!ok){var s=window.getSelection();if(s.rangeCount){var r=s.getRangeAt(0);r.deleteContents();r.insertNode(document.createTextNode(t));r.collapse(false);}el.dispatchEvent(new Event("input",{bubbles:true}));}
+});
+root.addEventListener("click",function(e){
+  var b=e.target.closest("[data-act]");if(!b||!root.contains(b))return;
+  var a=b.dataset.act;
+  if(a==="tab"){tab=b.dataset.tab;store(function(){localStorage.setItem(KEY+":tab",tab);});try{history.replaceState(null,"","#"+tab);}catch(x){}render(false);return;}
+  if(a==="addline"){var arr=getP(b.dataset.list);arr.push("");markDirty();render(true);focusPath(b.dataset.list+"."+(arr.length-1));return;}
+  if(a==="add"){add(b.dataset.arr);return;}
+  if(a==="move"){move(b.dataset.arr,+b.dataset.idx,+b.dataset.dir);return;}
+  if(a==="del"){
+    if(b.dataset.armed){getP(b.dataset.arr).splice(+b.dataset.idx,1);markDirty();render(true);}
+    else{b.dataset.armed="1";b.textContent="Delete?";b.classList.add("armed");setTimeout(function(){if(b.isConnected){delete b.dataset.armed;b.textContent="×";b.classList.remove("armed");}},3000);}
+    return;
+  }
+  if(a==="kind"){var sc=state.screens[+b.dataset.idx];sc.kind=cycle(KINDS,sc.kind);markDirty();render(true);return;}
+  if(a==="tag"){setP(b.dataset.path,cycle(TAGS,getP(b.dataset.path)));markDirty();render(true);return;}
+  if(a==="stat"){setP(b.dataset.path,cycle(STATS,getP(b.dataset.path)));markDirty();render(true);return;}
+  if(a==="save"){save();return;}
+  if(a==="copy"){copyJSON();return;}
+  if(a==="paste"){panel={kind:"paste",text:""};render(true);var jb=root.querySelector("#jsonbox");if(jb)jb.focus();return;}
+  if(a==="load"){loadJSON();return;}
+  if(a==="close"){panel=null;render(true);return;}
+  if(a==="discard"){state=JSON.parse(ORIGINAL);dirty=false;banner=null;store(function(){localStorage.removeItem(KEY+":draft");});render(true);return;}
+  if(a==="reapply"){state=conflictDraft;state.rev=BASE;conflictDraft=null;banner=null;markDirty();render(true);return;}
+  if(a==="dismiss"){banner=null;render(true);return;}
+});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&panel){panel=null;render(true);}});
+
+render(false);
+if(mode==="wait"){
+  window.claude.use("artifact").then(function(a){art=a;mode=a?"artifact":"nosave";refreshActs();},function(){mode="nosave";refreshActs();});
+}
+})();
+</script></body></html>

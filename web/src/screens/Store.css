@@ -1,0 +1,169 @@
+/* Store screen (#/store). Every rule is scoped to .store-*; the heatmap overrides only apply inside this screen. */
+
+.store-screen .eyebrow { font-size: 12px; letter-spacing: 1.4px; }
+.store-screen .screen-heading { margin-bottom: 24px; }
+.store-screen .screen-heading p { font-size: 17px; }
+.store-screen .heading-meta .pill { font-size: 13px; padding: 9px 14px; }
+.store-screen .heading-meta .pill .status-dot { width: 7px; height: 7px; }
+.store-screen .heading-meta .pill.amber .status-dot { background: var(--amber); }
+.store-screen .heading-meta > span:last-child { font-size: 14px; }
+
+.store-grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 22px; align-items: stretch; }
+.store-panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); box-shadow: var(--shadow); min-width: 0; }
+.store-panel-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.store-panel-heading h2 { font-size: 30px; line-height: 1.1; letter-spacing: -1px; font-weight: 500; margin-top: 6px; }
+.store-panel-heading .pill { font-size: 13px; padding: 8px 13px; }
+
+/* Heatmap panel */
+.store-map { align-self: start; padding: 22px 28px 24px; }
+.store-map-top { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 20px; }
+.store-map-label { display: flex; align-items: center; gap: 10px; font-size: 16px; min-width: 0; }
+.store-map-label strong { font-weight: 600; white-space: nowrap; }
+.store-map-label > span { color: var(--muted); font-size: 13px; border-left: 1px solid var(--line); padding-left: 12px; margin-left: 2px; }
+.store-kinds { display: inline-flex; flex-shrink: 0; gap: 4px; padding: 5px; border-radius: 999px; background: var(--mint-soft); border: 1px solid var(--line); }
+.store-kind { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 20px; border-radius: 999px; font-size: 15px; font-weight: 550; color: var(--muted); transition: color .2s; }
+.store-kind > svg, .store-kind-label { position: relative; z-index: 1; }
+.store-kind:hover, .store-kind.active { color: var(--ink); }
+.store-kind.active > svg { color: var(--accent-deep); }
+.store-kind-thumb { position: absolute; inset: 0; z-index: 0; border-radius: 999px; background: var(--surface); box-shadow: 0 2px 10px #183e3b14, 0 0 0 1px var(--line); }
+
+/* Projector sizes for the shared heatmap. Below 761px the component's own phone layout takes over. */
+@media (min-width: 761px) {
+  .store-map .heatmap-layout { grid-template-columns: minmax(0, 1fr) 250px; gap: 30px; }
+  .store-map .heatmap-visual-column { max-width: 450px; }
+  .store-map .heatmap-canvas-wrap { max-height: none; }
+  .store-map .heatmap-key { gap: 24px; }
+  .store-map .heatmap-eyebrow { font-size: 12px; }
+  .store-map .heatmap-key h3 { font-size: 30px; margin-top: 6px; }
+  .store-map .heatmap-key p { font-size: 15px; line-height: 1.5; }
+  .store-map .heatmap-gradient { height: 12px; }
+  .store-map .heatmap-legend > div:nth-child(2) { font-size: 14px; }
+  .store-map .heatmap-legend small { font-size: 13px; }
+  .store-map .heatmap-hotspots h4 { font-size: 15px; }
+  .store-map .heatmap-pin { width: 32px; height: 32px; font-size: 14px; }
+  .store-map .heatmap-hotspots strong { font-size: 22px; }
+  .store-map .heatmap-hotspots small { font-size: 13px; }
+  .store-map .heatmap-key .heatmap-fixtures { font-size: 13px; }
+  .store-map .heatmap-fixtures > span { width: 14px; height: 14px; }
+  .store-map .heatmap-export { font-size: 13px; }
+  .store-map .heatmap-scale, .store-map .heatmap-scale small, .store-map .heatmap-scale p { font-size: 13px; }
+  .store-map .heatmap-caption { font-size: 14px; margin-top: 16px; }
+  .store-map .heatmap-tooltip { font-size: 14px; }
+}
+
+.store-map-loading { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 30px; align-items: center; }
+.store-map-ghost { width: 100%; max-width: 450px; aspect-ratio: 78 / 92; justify-self: center; border-radius: 12px; background: repeating-linear-gradient(90deg, var(--mint-soft) 0 34px, #f3faf6 34px 58px); animation: store-breathe 1.4s ease-in-out infinite alternate; }
+.store-map-loading p { font-size: 16px; color: var(--muted); }
+.store-map-error .empty { padding: 70px 24px; }
+.store-map-error .empty p { font-size: 15px; }
+.store-map-error .store-retry { margin-top: 22px; font-size: 15px; }
+
+/* Right column */
+.store-side { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.store-alerts { padding: 24px 28px 26px; }
+.store-alert-list { position: relative; display: grid; gap: 12px; margin-top: 18px; }
+.store-alert { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; padding: 20px 22px; border-radius: var(--radius-card); background: var(--amber-soft); border: 1px solid #f0d29c; box-shadow: 0 10px 30px #e7ad5022; }
+.store-alert.fresh { animation: store-ping 1.6s ease-out 3; }
+.store-alert-icon { width: 50px; height: 50px; display: grid; place-items: center; border-radius: 16px; background: var(--amber); color: #fff; }
+.store-alert-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; }
+.store-alert-meta > strong { font-size: 13px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase; color: #7d5a1c; }
+.store-alert-meta time { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: #7d5a1c; font-variant-numeric: tabular-nums; }
+/* line-height 1 keeps the chip (20px) no taller than the time (21px), so the column doesn't jump when it goes. */
+.store-alert-new { padding: 4px 10px; border-radius: 999px; background: var(--amber); color: #fff; font-size: 12px; line-height: 1; font-weight: 650; }
+.store-alert-text { font-size: 22px; line-height: 1.3; letter-spacing: -.4px; font-weight: 500; margin: 8px 0 14px; text-wrap: pretty; }
+.store-alert-place { display: flex; align-items: center; gap: 12px; }
+.store-alert-place .product-tile.compact { width: 40px; height: 40px; min-height: 40px; }
+/* The tile's 6px brand word can't be read on a projector, and the product name sits right beside it. */
+.store-alert-place .product-brand, .store-move-product .product-brand { display: none; }
+.store-alert-place > span { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 15px; }
+.store-alert-place strong { font-weight: 550; }
+.store-alert-place small, .store-move-product small { display: inline-flex; align-items: center; gap: 5px; font-size: 15px; color: var(--muted); }
+.store-alerts-empty .empty { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 18px; text-align: left; align-items: center; padding: 6px 0 2px; }
+.store-alerts-empty .empty-icon { grid-row: span 2; margin: 0; }
+.store-alerts-empty .empty h3 { font-size: 22px; }
+.store-alerts-empty .empty p { font-size: 15px; margin-top: 4px; }
+
+.store-move { flex: 1; display: flex; flex-direction: column; padding: 24px 28px 26px; }
+.store-move-product { display: flex; align-items: center; gap: 14px; margin-top: 18px; }
+.store-move-product .product-tile.compact { width: 52px; height: 52px; min-height: 52px; border-radius: 12px; }
+.store-move-product strong { display: block; font-size: 20px; font-weight: 550; letter-spacing: -.3px; margin-bottom: 3px; }
+.store-move-numbers { flex: 1 0 auto; display: flex; align-items: center; align-content: center; flex-wrap: wrap; gap: 16px 24px; margin: 24px 0 20px; }
+.store-move-number strong { display: block; font-size: 76px; line-height: .95; font-weight: 500; letter-spacing: -3px; font-variant-numeric: tabular-nums; }
+.store-move-number span { display: block; margin-top: 10px; font-size: 13px; font-weight: 650; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); }
+.store-move-number.before strong { color: #93aba5; }
+.store-move-arrow { color: var(--accent-deep); margin-bottom: 26px; }
+.store-lift { margin-left: auto; padding: 14px 20px 13px; border-radius: 20px; background: var(--mint); color: var(--accent-deep); }
+.store-lift strong { display: flex; align-items: center; gap: 8px; font-size: 48px; line-height: 1; font-weight: 500; letter-spacing: -2px; }
+.store-lift span { display: block; margin-top: 6px; font-size: 13px; font-weight: 650; letter-spacing: 1.2px; text-transform: uppercase; }
+.store-lift.down { background: var(--amber-soft); color: #7d5a1c; }
+.store-move-sentence { font-size: 19px; line-height: 1.45; text-wrap: pretty; }
+.store-move-label { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 8px 13px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+
+@keyframes store-ping { 0% { box-shadow: 0 0 0 0 #e7ad5099; } 100% { box-shadow: 0 0 0 18px #e7ad5000; } }
+@keyframes store-breathe { from { opacity: .55; } to { opacity: 1; } }
+
+/* Laptop-sized projectors (1280 to 1550 wide): keep two columns so the alerts stay above the fold. */
+@media (min-width: 761px) and (max-width: 1550px) {
+  .store-grid { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+  .store-map { padding: 20px 24px 22px; }
+  .store-map .heatmap-layout, .store-map-loading { grid-template-columns: minmax(0, 1fr) 200px; gap: 22px; }
+  .store-map .heatmap-key { gap: 20px; }
+  .store-map .heatmap-key h3 { font-size: 25px; }
+  .store-map-label > span { display: none; }
+  .store-kind { padding: 10px 15px; }
+  .store-alerts, .store-move { padding: 22px 24px; }
+  .store-move-number strong { font-size: 64px; }
+  .store-lift strong { font-size: 44px; }
+}
+
+/* The hover hint only fits beside the kind switch on wide screens; below this it wrapped onto two lines. */
+@media (max-width: 1679px) {
+  .store-map-label > span { display: none; }
+}
+
+@media (max-width: 1100px) {
+  .store-grid { grid-template-columns: 1fr; }
+  /* Side by side only while each panel gets 430px; narrower tablets stack them instead of squeezing the alert. */
+  .store-side { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 430px), 1fr)); align-items: stretch; }
+}
+
+/* Phone: alerts first, then the map, then the before/after card. */
+@media (max-width: 760px) {
+  .store-screen .screen-heading p { font-size: 15px; }
+  .store-grid { gap: 16px; }
+  .store-side { display: contents; }
+  .store-alerts { order: 1; }
+  .store-map { order: 2; }
+  .store-move { order: 3; }
+  .store-panel { border-radius: 24px; }
+  .store-map, .store-alerts, .store-move { padding: 18px; }
+  .store-panel-heading h2 { font-size: 26px; }
+  .store-map-top { flex-direction: column; align-items: stretch; gap: 14px; margin-bottom: 16px; }
+  .store-map-label > span { display: none; }
+  .store-kinds { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .store-kind { padding: 11px 6px; font-size: 14px; gap: 6px; }
+  .store-map .heatmap-eyebrow, .store-map .heatmap-export { font-size: 12px; }
+  .store-map .heatmap-key h3 { font-size: 21px; }
+  .store-map .heatmap-key p { font-size: 13px; }
+  .store-map .heatmap-legend > div:nth-child(2), .store-map .heatmap-legend small, .store-map .heatmap-key .heatmap-fixtures,
+  .store-map .heatmap-scale, .store-map .heatmap-scale small, .store-map .heatmap-scale p, .store-map .heatmap-caption, .store-map .heatmap-hotspots small { font-size: 12px; }
+  .store-map .heatmap-hotspots h4 { font-size: 13px; }
+  .store-map .heatmap-hotspots strong { font-size: 17px; }
+  .store-map .heatmap-pin { width: 28px; height: 28px; font-size: 13px; }
+  .store-map-loading { grid-template-columns: 1fr; }
+  .store-alert { grid-template-columns: 1fr; gap: 12px; padding: 16px; }
+  .store-alert-icon { width: 42px; height: 42px; border-radius: 13px; }
+  .store-alert-text { font-size: 19px; }
+  .store-alerts-empty .empty-icon { width: 50px; height: 50px; border-radius: 16px; }
+  .store-alerts-empty .empty h3 { font-size: 19px; }
+  .store-move-numbers { gap: 12px 16px; }
+  .store-move-number strong { font-size: 56px; letter-spacing: -2px; }
+  .store-move-arrow { width: 26px; height: 26px; margin-bottom: 24px; }
+  .store-lift { margin-left: 0; width: 100%; display: flex; align-items: baseline; gap: 12px; }
+  .store-lift strong { font-size: 44px; }
+  .store-move-sentence { font-size: 17px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .store-alert.fresh, .store-map-ghost { animation: none; }
+}

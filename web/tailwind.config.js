@@ -1,0 +1,1 @@
+export default { content: ['./index.html', './src/**/*.{js,jsx}'], theme: { extend: { colors: { ink: 'var(--ink)', accent: 'var(--accent)', mint: 'var(--mint)' }, borderRadius: { panel: 'var(--radius-panel)' }, fontFamily: { sans: ['Inter', 'Arial', 'sans-serif'] } } }, plugins: [] };

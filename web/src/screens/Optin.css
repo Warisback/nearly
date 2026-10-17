@@ -1,0 +1,45 @@
+/* Opt-in: phone-first at 390 px. On wide screens the same card sits in a phone frame. */
+.optin-screen { display: flex; justify-content: center; padding-top: 22px; }
+.optin-phone { width: 100%; max-width: 440px; }
+.optin-card { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 36px; min-height: calc(100svh - 96px - 56px); padding: 6vh 4px 6px; }
+/* Neither block may shrink: on a short screen the card scrolls instead of the actions sliding over the message. */
+.optin-message-wrap, .optin-actions { flex-shrink: 0; }
+.optin-icon { display: grid; place-items: center; width: 68px; height: 68px; border-radius: 22px; background: var(--mint); color: var(--accent-deep); }
+.optin-card h1 { margin: 28px 0 14px; font-size: 36px; line-height: 1.1; letter-spacing: -.045em; font-weight: 500; text-wrap: balance; }
+.optin-keep { display: inline-block; }
+.optin-lead { color: var(--accent-deep); font-size: 20px; font-weight: 600; letter-spacing: -.01em; }
+.optin-text { color: var(--muted); font-size: 18px; line-height: 1.5; }
+.is-saved .optin-icon { border-radius: 50%; background: var(--accent-deep); color: #fff; box-shadow: 0 0 0 10px var(--mint-soft); }
+.is-declined .optin-icon { background: var(--grey); color: var(--ink); }
+
+.optin-actions { display: flex; flex-direction: column; gap: 6px; }
+.optin-error { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding: 14px 16px; border-radius: 16px; background: var(--amber-soft); color: #7a4f0d; font-size: 16px; font-weight: 550; line-height: 1.35; }
+.optin-save { display: flex; align-items: center; justify-content: center; gap: 11px; width: 100%; min-height: 64px; padding: 16px 22px; border-radius: 20px; background: var(--ink); color: #fff; font-size: 19px; font-weight: 600; letter-spacing: -.01em; box-shadow: 0 14px 30px #183e3b24; transition: transform .15s, background .2s; }
+.optin-save:hover:not(:disabled) { background: #0f2f2c; }
+.optin-save:active:not(:disabled) { transform: scale(.985); }
+.optin-save:disabled { opacity: .78; cursor: wait; }
+.optin-decline, .optin-back { display: inline-flex; align-items: center; justify-content: center; gap: 9px; align-self: center; min-height: 52px; padding: 12px 22px; border-radius: 16px; font-size: 17px; font-weight: 550; color: var(--ink); }
+.optin-decline:hover:not(:disabled), .optin-back:hover { background: #ffffffb3; }
+.optin-decline:disabled { opacity: .45; cursor: default; }
+.optin-back { width: 100%; border: 1px solid var(--line); background: #fff; }
+.optin-small { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; color: var(--muted); font-size: 14px; line-height: 1.45; text-align: center; }
+.optin-small svg { color: var(--accent-deep); }
+.optin-spin { animation: optin-spin .9s linear infinite; }
+@keyframes optin-spin { to { transform: rotate(360deg); } }
+
+.optin-statusbar { display: none; }
+
+/* Wide screens (projector, laptop): the same phone as the Shopper screen (Shopper.css, min-width 481px), at the same
+   size and position, so "Save my list" hands over to the list without the phone changing. Its screen is 390 x 844 at 1080p. */
+@media (min-width: 481px) {
+  .main.optin-screen { position: relative; display: grid; place-items: center; min-height: calc(100vh - 96px); padding: 20px 0 12px; }
+  .main.optin-screen::before { content: ''; position: absolute; inset: 20px 0 12px; background: radial-gradient(circle closest-side, #c5f3edcc 0%, #c5f3ed00 80%); pointer-events: none; }
+  .optin-phone { position: relative; width: 412px; max-width: none; height: clamp(560px, calc(100vh - 150px), 866px); padding: 11px; border-radius: 56px; background: #14312f; box-shadow: 0 0 0 1px #0b2321, inset 0 0 0 1.5px #3d6c67, 0 60px 110px -30px #183e3b59, 0 26px 50px -28px #183e3b73; }
+  /* A short screen scrolls inside the phone rather than clipping a state. */
+  .optin-card { height: 100%; min-height: 0; padding: clamp(84px, 11vh, 104px) 22px 28px; border-radius: 45px; background: var(--paper); overflow: hidden auto; scrollbar-width: none; }
+  .optin-card::-webkit-scrollbar { display: none; }
+  .optin-statusbar { position: absolute; top: 0; left: 0; right: 0; height: 54px; display: flex; align-items: center; justify-content: space-between; padding: 4px 30px 0 34px; font-size: 15px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .optin-statusbar::after { content: ''; position: absolute; left: 50%; top: 11px; width: 120px; height: 34px; transform: translateX(-50%); border-radius: 20px; background: #0b1d1c; }
+  .optin-status-icons { display: flex; align-items: center; gap: 6px; }
+}
+@media (prefers-reduced-motion: reduce) { .optin-spin { animation: none; } }

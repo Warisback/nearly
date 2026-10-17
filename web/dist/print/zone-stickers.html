@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nearly · Six shelf zone stickers · A4</title>
+  <style>
+    @page { size: A4 portrait; margin: 0; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: #fff; color: #000; font-family: Arial, Helvetica, sans-serif; }
+    main { width: 210mm; height: 297mm; padding: 25mm 30mm; display: grid; grid-template-columns: repeat(2, 70mm); grid-template-rows: repeat(3, 70mm); gap: 10mm; }
+    .cut { width: 70mm; height: 70mm; padding: 3mm; border: .3mm dashed #777; }
+    .sticker { height: 100%; width: 100%; border: 2mm solid #000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    strong { font-size: 48mm; font-weight: 900; line-height: .95; letter-spacing: -2mm; padding-right: 2mm; }
+    span { margin-top: 1mm; font-size: 8mm; font-weight: 700; letter-spacing: .5mm; }
+    @media screen { body { background: #ededed; } main { margin: 24px auto; background: #fff; box-shadow: 0 10px 50px #0001; } }
+    @media print { html, body { width: 210mm; height: 297mm; } main { margin: 0; } }
+  </style>
+</head>
+<body>
+  <main aria-label="Six shelf stickers, numbers one to six">
+    <div class="cut"><div class="sticker"><strong>1</strong><span>B2-A</span></div></div>
+    <div class="cut"><div class="sticker"><strong>2</strong><span>B2-B</span></div></div>
+    <div class="cut"><div class="sticker"><strong>3</strong><span>B2-C</span></div></div>
+    <div class="cut"><div class="sticker"><strong>4</strong><span>B1-A</span></div></div>
+    <div class="cut"><div class="sticker"><strong>5</strong><span>B1-B</span></div></div>
+    <div class="cut"><div class="sticker"><strong>6</strong><span>B1-C</span></div></div>
+  </main>
+</body>
+</html>

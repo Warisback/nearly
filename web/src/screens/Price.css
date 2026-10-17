@@ -1,0 +1,41 @@
+/* Price: the money screen. One figure, readable from the back of the room. */
+.price-screen { padding-bottom: 8px; }
+.price-panel { position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; gap: clamp(18px, 3.4vh, 40px); padding: clamp(28px, 5vh, 56px) clamp(22px, 3.6vw, 68px); background: var(--surface, #fff); border: 1px solid var(--line); border-radius: var(--radius-panel); }
+.price-panel::before { content: ''; position: absolute; z-index: -1; width: 980px; height: 980px; right: -360px; top: -470px; border-radius: 50%; background: radial-gradient(circle, var(--mint) 0%, #c5f3ed00 68%); opacity: .8; pointer-events: none; }
+.price-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px 24px; }
+.price-eyebrow { display: block; margin-bottom: 12px; color: var(--accent-deep); font-size: 13px; font-weight: 650; letter-spacing: 1.6px; text-transform: uppercase; }
+.price-context { margin: 0; font-size: clamp(22px, 2.1vw, 36px); line-height: 1.2; letter-spacing: -.025em; font-weight: 500; text-wrap: balance; }
+.price-example { display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; padding: 10px 16px; border-radius: 999px; background: var(--amber-soft); color: #82601f; font-size: 15px; font-weight: 600; white-space: nowrap; }
+
+.price-figure-wrap { container-type: inline-size; }
+.price-figure { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: clamp(14px, 1.6vw, 30px); row-gap: 2px; line-height: .95; }
+.price-amount { display: inline-block; white-space: nowrap; font-weight: 500; letter-spacing: -.055em; font-variant-numeric: lining-nums; font-size: clamp(84px, 12vw, 232px); font-size: min(232px, 26vh, calc(100cqw / (var(--chars, 4) * .6))); }
+.price-per { color: var(--muted); font-size: clamp(30px, 3.4vw, 64px); letter-spacing: -.03em; font-weight: 450; }
+.price-state { min-height: clamp(150px, 24vh, 230px); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 16px; }
+.price-state p { font-size: 20px; color: var(--muted); }
+.price-state .button { font-size: 15px; }
+
+.price-bottom { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); align-items: end; gap: 24px 48px; padding-top: clamp(20px, 3.2vh, 36px); border-top: 1px solid var(--line); }
+.price-year { margin: 0; max-width: 28ch; font-size: clamp(26px, 2.5vw, 46px); line-height: 1.2; letter-spacing: -.035em; }
+.price-year strong { color: var(--accent-deep); font-weight: 600; }
+.price-keep { white-space: nowrap; }
+.price-cpm label { display: block; margin-bottom: 10px; font-size: 15px; font-weight: 600; }
+.price-input { display: flex; align-items: center; gap: 8px; height: 68px; padding: 0 20px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 18px; transition: border-color .2s, box-shadow .2s, background .2s; }
+.price-input:focus-within { background: #fff; border-color: var(--accent-deep); box-shadow: 0 0 0 4px #2dbdb02e; }
+.price-input.invalid { background: #fffaf0; border-color: var(--amber); }
+.price-input.invalid:focus-within { box-shadow: 0 0 0 4px #e7ad502e; }
+.price-input span { color: var(--muted); font-size: 30px; }
+.price-input input { flex: 1; min-width: 0; width: 100%; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; font-size: 30px; font-weight: 500; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.price-input input:focus-visible { outline: none; }
+.price-note { min-height: 21px; margin-top: 10px; color: var(--muted); font-size: 15px; line-height: 1.4; }
+.price-note.warn { color: #8a5a10; font-weight: 550; }
+
+@media (min-width: 761px) { .price-panel { min-height: max(500px, calc(100vh - 300px)); } }
+@media (max-width: 760px) {
+  .price-panel { border-radius: 24px; }
+  .price-panel::before { width: 560px; height: 560px; right: -300px; top: -300px; }
+  .price-top { flex-wrap: wrap; }
+  .price-eyebrow { font-size: 12px; margin-bottom: 10px; }
+  .price-example { padding: 8px 13px; font-size: 14px; }
+  .price-bottom { grid-template-columns: minmax(0, 1fr); }
+}
