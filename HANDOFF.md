@@ -1,6 +1,32 @@
 # Handoff: what's left
 
-**Nothing has run on the build machine yet. Your first job is getting into the lab at workshop.thecosmoslabs.com. Then do the NOTES.md section 0 checks and deploy.**
+**We haven't been approved for the event yet, so nobody can get into the lab. Chase approval first. If it doesn't come, switch to the stack in "No approval?" below and keep building.**
+
+## No approval?
+
+**Without approval we probably can't submit or be judged at VAST London.** The submission form needs an approved tokens& login, and judging happens at attendees' tables. The lab sign-in (a code by email, then the passcode from the venue slide) also only works for approved emails.
+
+**Chase approval now:**
+- [ ] Message the host on Luma (luma.com/vastlondon) and the organisers, tokens& (tokensand.com/vastlondon), and ask to be approved or put on the walk-in list.
+- [ ] If you're near the venue, ask at the door. Teams sometimes get let in when people don't show.
+
+**If it doesn't come, build without the event.** Everything else (the UI, seed data, heatmaps, stickers, QR card, pitch frames) already works without it.
+
+| Event piece | Use instead | What changes |
+|---|---|---|
+| Cosmos Reason on the event's GPUs | **NVIDIA `cosmos3-nano-reasoner` on build.nvidia.com.** It reasons over video, is listed as a free endpoint, and needs a free NVIDIA developer key (`nvapi-…`) | Works like the OpenAI API: in `backend/verify.py`, change the base URL, model name and key (read from `.env`, never printed). Backup: Google Gemini, which also takes video. |
+| YOLO endpoint | **Ultralytics YOLO11n run locally** (`pip install ultralytics`) | Fast enough on a laptop processor at 2 frames per second. |
+| W&B Inference + Weave | **The same tools on your own W&B account** (key from wandb.ai/authorize) | We haven't confirmed the free allowance. If it runs out, the fixed fallback sentence still works. |
+| VAST pipeline + VastDB | **The JSON files already built in as the fallback** (`data/*.json`), or SQLite | No code change. We lose the VAST-specific pitch moments: the live upload and the history in their tables. |
+| Deploy to `/app` | **Render or Railway** for the FastAPI app, or **Vercel** for the UI alone | It needs a public URL for the judge's phone and the QR card. |
+
+**Not Runware.** It's mainly for generating images and video, and its docs show no task that takes video in and returns text. Don't use generated video as demo footage either: judges reward real clips.
+
+**What we'd lose:** two of the four judges are from VAST, and their beats disappear. If we can't get in at all, Nearly still stands as a portfolio project or an entry for the next hackathon.
+
+---
+
+**If you are approved:** nothing has run on the build machine yet. Your first job is getting into the lab at workshop.thecosmoslabs.com, then doing the NOTES.md section 0 checks and deploying.
 
 You own every decision from here, including the risky Cosmos check.
 - [`CONCEPT.md`](CONCEPT.md) is the pitch.
@@ -34,6 +60,16 @@ You own every decision from here, including the risky Cosmos check.
 
 - [ ] **Cosmos Community account** at community.vastdata.com with your event email, if you don't have one.
 - [ ] **Sign in at https://workshop.thecosmoslabs.com** and pick our team number. Your lab page has **Open desktop** (the build machine) and **App** (our deployed app). If no machine shows up, ask staff.
+  - **If it won't let you in:** the site works, but it sits behind a Cloudflare sign-in.
+    1. Sign in with the email you registered with, which emails you a one-time code (check spam).
+    2. "Launch VM" then asks for a **passcode, shown on the organisers' slide** at the venue.
+    3. If it says your email has no access, ask staff to add it.
+    4. A work laptop's VPN can block it, so try a personal laptop, a private window or a phone hotspot.
+  - **There's no way round the lab page.** Even Cursor's SSH route is set up there: you paste a public key under "Option 1 - Key".
+  - **Plan B if it stays broken:**
+    - Ask staff for our team's Cosmos URL, YOLO URL and GPU token. The GPU host answers from the venue Wi-Fi, so `verify.py`, the eval and `python main.py` all run on the laptop.
+    - Demo from the laptop at the table and submit the repo and video.
+    - You lose the VAST upload, the VastDB tables and the `/app` URL. Say that honestly to the VAST judges.
 - [ ] **Cursor** signed in with the event email, so the event's credits apply.
 - [ ] **tokens& login** for the submission form at tokensand.com/vastlondon (Google or an emailed code). Do it now, not at 15:45.
 - [ ] **Ask staff two questions:**
